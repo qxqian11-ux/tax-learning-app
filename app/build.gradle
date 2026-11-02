@@ -1,0 +1,62 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
+}
+def signingFile = rootProject.file('signing/release.properties')
+def secrets = new Properties()
+if (signingFile.exists()) signingFile.withInputStream { secrets.load(it) }
+android {
+    namespace 'cn.taxlearning.ledger'
+    compileSdk 34
+    defaultConfig {
+        applicationId 'cn.taxlearning.ledger'
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName '1.0.0'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        javaCompileOptions { annotationProcessorOptions { arguments += ['room.schemaLocation': "$projectDir/schemas".toString()] } }
+    }
+    signingConfigs {
+        release {
+            if (signingFile.exists()) {
+                storeFile rootProject.file('signing/tax-learning-release.p12')
+                storePassword secrets.getProperty('storePassword')
+                keyAlias 'tax-learning'
+                keyPassword secrets.getProperty('keyPassword')
+                storeType 'PKCS12'
+            }
+        }
+    }
+    buildTypes {
+        debug { applicationIdSuffix '.debug'; versionNameSuffix '-dev' }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+    kotlinOptions { jvmTarget = '17' }
+    lint { abortOnError true; checkReleaseBuilds true }
+}
+tasks.register('checkReleaseKey') {
+    doLast { if (!signingFile.exists()) throw new GradleException('请先运行 scripts/create-signing.ps1 创建独立签名。') }
+}
+tasks.matching { it.name == 'preReleaseBuild' }.configureEach { dependsOn 'checkReleaseKey' }
+dependencies {
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.activity:activity-ktx:1.8.2'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
+    implementation 'androidx.room:room-runtime:2.6.1'
+    implementation 'androidx.room:room-ktx:2.6.1'
+    kapt 'androidx.room:room-compiler:2.6.1'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.json:json:20240303'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+}
