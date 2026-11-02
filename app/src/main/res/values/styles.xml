@@ -1,14 +1,14 @@
 <resources>
     <style name="Base.Theme.TaxLearning" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">#B52F3B</item>
-        <item name="colorPrimaryVariant">#932632</item>
-        <item name="colorSecondary">#B52F3B</item>
+        <item name="colorPrimary">#4088F5</item>
+        <item name="colorPrimaryVariant">#2678DD</item>
+        <item name="colorSecondary">#4088F5</item>
         <item name="android:fontFamily">sans</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:statusBarColor">#FAF8F5</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">#000000</item>
         <item name="android:navigationBarColor">#252936</item>
         <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:windowBackground">#F5F5F7</item>
+        <item name="android:windowBackground">#F5F6FA</item>
     </style>
     <style name="Theme.TaxLearning" parent="Base.Theme.TaxLearning" />
 </resources>

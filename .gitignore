@@ -16,3 +16,6 @@ backup/
 *.log
 
 acceptance/
+
+__pycache__/
+*.pyc

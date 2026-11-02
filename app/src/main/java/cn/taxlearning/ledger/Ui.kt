@@ -19,11 +19,11 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
-const val RED = 0xFFB52F3B.toInt()
+const val ACCENT = 0xFF4088F5.toInt()
 const val INK = 0xFF252936.toInt()
 const val MUTED = 0xFF747884.toInt()
-const val BG = 0xFFF5F5F7.toInt()
-const val PALE = 0xFFFAECEC.toInt()
+const val BG = 0xFFF5F6FA.toInt()
+const val PALE = 0xFFEDF5FF.toInt()
 
 abstract class Screen : AppCompatActivity() {
     override fun onResume() {
@@ -59,14 +59,14 @@ abstract class Screen : AppCompatActivity() {
         return MaterialButton(this, null, if(outline) com.google.android.material.R.attr.materialButtonOutlinedStyle else com.google.android.material.R.attr.materialButtonStyle).apply {
             text=s; isAllCaps=false; textSize=15f; cornerRadius=dp(12); minHeight=dp(52)
             insetTop=0; insetBottom=0
-            if(outline) { setTextColor(RED); strokeColor=ColorStateList.valueOf(0xFFE7CBCD.toInt()); strokeWidth=dp(1) }
-            else { backgroundTintList=ColorStateList.valueOf(RED); setTextColor(Color.WHITE) }
+            if(outline) { setTextColor(ACCENT); strokeColor=ColorStateList.valueOf(0xFFD4E4FC.toInt()); strokeWidth=dp(1) }
+            else { backgroundTintList=ColorStateList.valueOf(ACCENT); setTextColor(Color.WHITE) }
             parent.addView(this, LinearLayout.LayoutParams(-1,-2).apply { topMargin=dp(8) })
             setOnClickListener { action() }
         }
     }
     fun banner(s: String = "学习演示 · 所有记录均为模拟数据", parent: LinearLayout = body) {
-        parent.addView(text(s,12f,RED).apply { background=shape(PALE,10); pad(this,12) }, LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=dp(16) })
+        parent.addView(text(s,12f,ACCENT).apply { background=shape(PALE,10); pad(this,12) }, LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=dp(16) })
     }
     fun item(title: String, subtitle: String? = null, icon: Int = R.drawable.ic_book, parent: LinearLayout = body, action: () -> Unit) {
         val r = row().apply { minimumHeight=dp(64); setPadding(dp(2),dp(10),dp(2),dp(10)); isClickable=true; isFocusable=true }
@@ -108,12 +108,12 @@ abstract class Screen : AppCompatActivity() {
     }
     fun totals(parent: LinearLayout, year: Int, rows: List<Income>) {
         val t=rows.totals()
-        card(parent,RED) {
-            addView(text("$year 年度收入合计（元）",13f,0xFFF5DADB.toInt()))
+        card(parent,ACCENT) {
+            addView(text("$year 年度收入合计（元）",13f,0xFFE0EDFF.toInt()))
             space(this,6); addView(text(Rules.money(t.income),30f,Color.WHITE,true)); space(this,16)
             addView(text("已申报税额  ¥ ${Rules.money(t.declared)}",14f,Color.WHITE))
             addView(text("已缴税额      ¥ ${Rules.money(t.paid)}",14f,Color.WHITE))
-            space(this,8); addView(text("全年 ${rows.size} 笔 · 不受下方筛选影响",11f,0xFFF5DADB.toInt()))
+            space(this,8); addView(text("全年 ${rows.size} 笔 · 不受下方筛选影响",11f,0xFFE0EDFF.toInt()))
         }
     }
     fun spinner(parent: LinearLayout, title: String, choices: List<String>, selected: Int = 0, callback: (Int) -> Unit): Spinner {
@@ -125,66 +125,6 @@ abstract class Screen : AppCompatActivity() {
             onItemSelectedListener=object: AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p: AdapterView<*>?,v: View?,i: Int,id: Long) { callback(i) }
                 override fun onNothingSelected(p: AdapterView<*>?) {}
-            }
-        }
-    }
-}
-
-class MainActivity : Screen() {
-    private var tab=0
-    override fun onCreate(state: Bundle?) {
-        super.onCreate(state); tab=state?.getInt("tab")?:0; setup("税知账",false)
-        val nav=com.google.android.material.bottomnavigation.BottomNavigationView(this).apply {
-            setBackgroundColor(Color.WHITE)
-            menu.add(0,1,0,"首页").setIcon(R.drawable.ic_home)
-            menu.add(0,2,1,"我的").setIcon(R.drawable.ic_person)
-            val colors=ColorStateList(arrayOf(intArrayOf(android.R.attr.state_checked),intArrayOf()),intArrayOf(RED,MUTED))
-            itemTextColor=colors; itemIconTintList=colors
-            setOnItemSelectedListener { tab=it.itemId-1; render(); true }
-            selectedItemId=tab+1
-        }
-        root.addView(nav,LinearLayout.LayoutParams(-1,-2)); render()
-    }
-    override fun onSaveInstanceState(out: Bundle) { out.putInt("tab",tab); super.onSaveInstanceState(out) }
-    private fun render() {
-        body.removeAllViews()
-        if(tab==0) {
-            body.addView(text("把每一份收入，记清楚",24f,INK,true)); space(body,6)
-            body.addView(text("个人所得税知识与收入记录练习",13f,MUTED)); space(body,18); banner()
-            card(color=RED) {
-                addView(text("收入纳税明细",24f,Color.WHITE,true)); space(this,8)
-                addView(text("按年度查询、维护你的模拟收入记录",13f,Color.WHITE)); space(this,14)
-                val b=button("去查询  →",this) { go(QueryActivity::class.java) }
-                b.backgroundTintList=ColorStateList.valueOf(Color.WHITE); b.setTextColor(RED)
-            }
-            label("常用业务")
-            card {
-                item("收入纳税明细","查询 · 新增 · 修改",parent=this) { go(QueryActivity::class.java) }
-                item("年度收入统计","用图表看懂每一笔收入",R.drawable.ic_chart,this) { go(StatsActivity::class.java,Rules.currentYear()) }
-                item("数据备份与恢复","CSV 导出 / JSON 备份",R.drawable.ic_folder,this) { go(BackupActivity::class.java) }
-            }
-            label("学习服务")
-            card {
-                item("综合所得年度汇算","业务流程介绍",parent=this) { info("综合所得年度汇算") }
-                item("专项附加扣除","常见项目与学习说明",parent=this) { info("专项附加扣除") }
-                item("纳税记录","学习版功能说明",parent=this) { info("纳税记录") }
-            }
-            body.addView(text("本应用独立开发，不属于官方税务应用。",12f,MUTED).apply { gravity=Gravity.CENTER })
-        } else {
-            card {
-                val avatar=ImageView(this@MainActivity).apply { setImageResource(R.drawable.ic_person); background=shape(PALE,40); pad(this,14); contentDescription="模拟用户头像" }
-                addView(avatar,LinearLayout.LayoutParams(dp(64),dp(64))); space(this)
-                addView(text("学习同学",22f,INK,true)); addView(text("模拟身份 · 无需注册或登录",13f,MUTED))
-            }
-            banner("不采集真实身份证号或银行卡号")
-            card {
-                listOf("个人信息","任职受雇信息","家庭成员信息","银行卡信息").forEach { name ->
-                    item(name,icon=R.drawable.ic_person,parent=this) { info(name) }
-                }
-            }
-            card {
-                item("数据备份与恢复",icon=R.drawable.ic_folder,parent=this) { go(BackupActivity::class.java) }
-                listOf("安全中心","通用设置","关于应用").forEach { name -> item(name,parent=this) { info(name) } }
             }
         }
     }
@@ -257,12 +197,12 @@ class IncomeListActivity : Screen() {
         filtered.drop(page*50).take(50).forEach { r -> card(records) {
             addView(text("${r.month}月  ·  ${r.category}",16f,INK,true)); space(this,8)
             addView(text(r.source,14f)); addView(text("扣缴义务人：${r.payer}",12f,MUTED)); space(this,12)
-            addView(text("收入金额（元）",12f,MUTED)); addView(text(Rules.money(r.incomeCents),24f,RED,true)); space(this,6)
+            addView(text("收入金额（元）",12f,MUTED)); addView(text(Rules.money(r.incomeCents),24f,ACCENT,true)); space(this,6)
             addView(text("已申报 ¥ ${Rules.money(r.declaredCents)}\n已缴税 ¥ ${Rules.money(r.paidCents)}",13f,MUTED))
             addView(text("所属年度 $year · 收入日期 ${r.date}",11f,MUTED)); space(this,6)
             button("查看详情",this,true) { go(DetailActivity::class.java,id=r.id) }
             val actions=row()
-            val modify=TextView(this@IncomeListActivity).apply { text="修改"; setTextColor(RED); gravity=Gravity.CENTER; minHeight=dp(48); setOnClickListener { go(EditActivity::class.java,id=r.id) } }
+            val modify=TextView(this@IncomeListActivity).apply { text="修改"; setTextColor(ACCENT); gravity=Gravity.CENTER; minHeight=dp(48); setOnClickListener { go(EditActivity::class.java,id=r.id) } }
             val delete=TextView(this@IncomeListActivity).apply { text="删除"; setTextColor(MUTED); gravity=Gravity.CENTER; minHeight=dp(48); setOnClickListener { confirmDelete(r) { } } }
             actions.addView(modify,LinearLayout.LayoutParams(0,-2,1f)); actions.addView(delete,LinearLayout.LayoutParams(0,-2,1f)); addView(actions)
             setOnClickListener { go(DetailActivity::class.java,id=r.id) }

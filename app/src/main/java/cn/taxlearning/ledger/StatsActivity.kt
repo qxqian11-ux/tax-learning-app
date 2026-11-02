@@ -44,7 +44,7 @@ class StatsActivity : Screen() {
         parent.addView(text("$title   ¥ ${Rules.money(amount)}",13f)); space(parent,5)
         val track=row().apply { background=shape(PALE,4); contentDescription="$title 收入 ${Rules.money(amount)} 元" }
         val fraction=(amount.toDouble()/max).toFloat()
-        if(fraction>0)track.addView(View(this).apply { background=shape(RED,4) },LinearLayout.LayoutParams(0,dp(7),fraction.coerceAtLeast(.005f)))
+        if(fraction>0)track.addView(View(this).apply { background=shape(ACCENT,4) },LinearLayout.LayoutParams(0,dp(7),fraction.coerceAtLeast(.005f)))
         if(fraction<1)track.addView(View(this),LinearLayout.LayoutParams(0,dp(7),1-fraction))
         parent.addView(track,LinearLayout.LayoutParams(-1,dp(7))); space(parent,14)
     }
