@@ -34,6 +34,7 @@ abstract class Screen : AppCompatActivity() {
     val repo get() = (application as TaxApp).repository
     lateinit var root: LinearLayout
     lateinit var body: LinearLayout
+    lateinit var titleBar: android.widget.FrameLayout
     fun dp(n: Int) = (n * resources.displayMetrics.density + .5f).toInt()
     fun text(s: String, size: Float = 14f, color: Int = INK, bold: Boolean = false) = TextView(this).apply {
         text = s; textSize = size; setTextColor(color)
@@ -77,19 +78,16 @@ abstract class Screen : AppCompatActivity() {
         val a=obtainStyledAttributes(intArrayOf(android.R.attr.selectableItemBackground)); r.foreground=a.getDrawable(0); a.recycle()
         r.setOnClickListener { action() }; parent.addView(r,LinearLayout.LayoutParams(-1,-2))
     }
-    fun setup(title: String, back: Boolean = true) {
-        root=column().apply { setBackgroundColor(BG) }; setContentView(root)
-        val bar=row().apply { setBackgroundColor(Color.WHITE); setPadding(dp(8),dp(6),dp(16),dp(6)); minimumHeight=dp(58) }
-        if(back) bar.addView(ImageButton(this).apply {
-            setImageResource(R.drawable.ic_back); contentDescription="返回"; setBackgroundColor(Color.TRANSPARENT)
-            setOnClickListener { onBackPressedDispatcher.onBackPressed() }
-        }, LinearLayout.LayoutParams(dp(48),dp(48)))
-        else bar.setPadding(dp(20),dp(12),dp(20),dp(12))
-        bar.addView(text(title,18f,INK,true),LinearLayout.LayoutParams(0,-2,1f))
-        root.addView(bar,LinearLayout.LayoutParams(-1,-2))
-        val scroll=ScrollView(this).apply { isFillViewport=true; clipToPadding=false }
-        body=column().apply { setPadding(dp(16),dp(20),dp(16),dp(24)) }
-        scroll.addView(body,ViewGroup.LayoutParams(-1,-2)); root.addView(scroll,LinearLayout.LayoutParams(-1,0,1f))
+    fun setup(title: String, back: Boolean = true, edgeToEdge: Boolean = false) {
+        root=column().apply { setBackgroundColor(BG) };setContentView(root)
+        titleBar=android.widget.FrameLayout(this).apply { setBackgroundColor(Color.WHITE) }
+        titleBar.addView(text(title,17f,0xFF33363B.toInt()).apply { gravity=Gravity.CENTER;setPadding(dp(70),0,dp(70),0);isSingleLine=true },android.widget.FrameLayout.LayoutParams(-1,-1))
+        if(back)titleBar.addView(text("〈返回",16f,ACCENT).apply { gravity=Gravity.CENTER;setPadding(dp(7),0,dp(5),0);contentDescription="返回";setOnClickListener { onBackPressedDispatcher.onBackPressed() } },android.widget.FrameLayout.LayoutParams(-2,-1,Gravity.START))
+        root.addView(titleBar,LinearLayout.LayoutParams(-1,dp(48)))
+        root.addView(View(this).apply { setBackgroundColor(0xFFE6E8EB.toInt()) },LinearLayout.LayoutParams(-1,dp(1)))
+        val scroll=ScrollView(this).apply { id=R.id.page_scroll;isFillViewport=true;clipToPadding=false }
+        body=column().apply { if(!edgeToEdge)setPadding(dp(16),dp(20),dp(16),dp(24)) }
+        scroll.addView(body,ViewGroup.LayoutParams(-1,-2));root.addView(scroll,LinearLayout.LayoutParams(-1,0,1f))
     }
     fun go(cls: Class<*>, year: Int? = null, id: String? = null, title: String? = null) {
         startActivity(Intent(this,cls).apply { if(year!=null)putExtra("year",year); if(id!=null)putExtra("id",id); if(title!=null)putExtra("title",title) })
@@ -130,109 +128,9 @@ abstract class Screen : AppCompatActivity() {
     }
 }
 
-class QueryActivity : Screen() {
-    private var year=Rules.currentYear()
-    private val selected=BooleanArray(Rules.categories.size) { true }
-    override fun onCreate(state: Bundle?) {
-        super.onCreate(state); year=state?.getInt("year")?:year
-        state?.getBooleanArray("categories")?.copyInto(selected)
-        setup("收入纳税明细查询"); banner()
-        body.addView(text("选择查询条件",24f,INK,true)); space(body,20)
-        val years=Rules.years()
-        spinner(body,"纳税年度",years.map { "$it 年" },years.indexOf(year)) { year=years[it] }
-        space(body,20); label("所得项目")
-        card {
-            Rules.categories.forEachIndexed { i,s ->
-                addView(com.google.android.material.checkbox.MaterialCheckBox(this@QueryActivity).apply {
-                    text=s; textSize=15f; isChecked=selected[i]; minHeight=dp(48)
-                    setOnCheckedChangeListener { _,checked -> selected[i]=checked }
-                })
-            }
-        }
-        button("查询") {
-            if(selected.none { it }) { toast("请至少选择一个所得项目"); return@button }
-            startActivity(Intent(this,IncomeListActivity::class.java).putExtra("year",year)
-                .putStringArrayListExtra("categories",ArrayList(Rules.categories.filterIndexed { i,_ -> selected[i] })))
-        }
-        space(body,12); body.addView(text("可查询 2019 年至当前年份。查询结果来自本机数据库，仅用于课程演示。",12f,MUTED))
-    }
-    override fun onSaveInstanceState(out: Bundle) { out.putInt("year",year); out.putBooleanArray("categories",selected); super.onSaveInstanceState(out) }
-}
-
-class IncomeListActivity : Screen() {
-    private var year=0; private var month=0; private var category="全部所得项目"
-    private var rows: List<Income> = emptyList()
-    private var page=0
-    private lateinit var summary: LinearLayout
-    private lateinit var records: LinearLayout
-    private var allowed: List<String> = Rules.categories
-    override fun onCreate(state: Bundle?) {
-        super.onCreate(state); year=intent.getIntExtra("year",Rules.currentYear())
-        month=state?.getInt("month")?:0; category=state?.getString("category")?:category
-        allowed=intent.getStringArrayListExtra("categories")?:Rules.categories
-        setup("收入纳税明细 · $year"); banner()
-        summary=column(); body.addView(summary)
-        button("＋ 新增收入明细") { go(EditActivity::class.java,year) }
-        button("查看年度统计",outline=true) { go(StatsActivity::class.java,year) }
-        space(body,18)
-        spinner(body,"纳税月份",listOf("全部月份")+(1..12).map { "${it}月" },month) { month=it; page=0; renderRows() }
-        space(body,12)
-        val choices=listOf("全部所得项目")+allowed
-        spinner(body,"所得项目",choices,choices.indexOf(category)) { category=choices[it]; page=0; renderRows() }
-        space(body,16); records=column(); body.addView(records)
-        work { repo.observe(year).collect { rows=it; summary.removeAllViews(); totals(summary,year,rows); renderRows() } }
-    }
-    override fun onSaveInstanceState(out: Bundle) { out.putInt("month",month); out.putString("category",category); super.onSaveInstanceState(out) }
-    private fun renderRows() {
-        if(!::records.isInitialized)return
-        records.removeAllViews()
-        val filtered=rows.filter { (month==0||it.month==month) && it.category in allowed && (category=="全部所得项目"||it.category==category) }
-        records.addView(text("筛选结果 ${filtered.size} 笔 · 收入 ¥ ${Rules.money(filtered.totals().income)}",13f,MUTED)); space(records)
-        if(filtered.isEmpty()) card(records) {
-            addView(text("暂时没有收入明细",18f,INK,true)); space(this,8)
-            addView(text("可以调整筛选条件，或为 $year 年新增第一笔收入。",14f,MUTED))
-        }
-        val pages=((filtered.size+49)/50).coerceAtLeast(1)
-        page=page.coerceIn(0,pages-1)
-        filtered.drop(page*50).take(50).forEach { r -> card(records) {
-            addView(text("${r.month}月  ·  ${r.category}",16f,INK,true)); space(this,8)
-            addView(text(r.source,14f)); addView(text("扣缴义务人：${r.payer}",12f,MUTED)); space(this,12)
-            addView(text("收入金额（元）",12f,MUTED)); addView(text(Rules.money(r.incomeCents),24f,ACCENT,true)); space(this,6)
-            addView(text("已申报 ¥ ${Rules.money(r.declaredCents)}\n已缴税 ¥ ${Rules.money(r.paidCents)}",13f,MUTED))
-            addView(text("所属年度 $year · 收入日期 ${r.date}",11f,MUTED)); space(this,6)
-            button("查看详情",this,true) { go(DetailActivity::class.java,id=r.id) }
-            val actions=row()
-            val modify=TextView(this@IncomeListActivity).apply { text="修改"; setTextColor(ACCENT); gravity=Gravity.CENTER; minHeight=dp(48); setOnClickListener { go(EditActivity::class.java,id=r.id) } }
-            val delete=TextView(this@IncomeListActivity).apply { text="删除"; setTextColor(MUTED); gravity=Gravity.CENTER; minHeight=dp(48); setOnClickListener { confirmDelete(r) { } } }
-            actions.addView(modify,LinearLayout.LayoutParams(0,-2,1f)); actions.addView(delete,LinearLayout.LayoutParams(0,-2,1f)); addView(actions)
-            setOnClickListener { go(DetailActivity::class.java,id=r.id) }
-        } }
-        if(pages>1) {
-            records.addView(text("第 ${page+1} / $pages 页 · 每页 50 笔",13f,MUTED))
-            if(page>0)button("上一页",records,true) { page--; renderRows() }
-            if(page<pages-1)button("下一页",records,true) { page++; renderRows() }
-        }
-    }
-}
-
 fun Screen.confirmDelete(r: Income, after: () -> Unit) {
     MaterialAlertDialogBuilder(this).setTitle("删除这笔收入？")
         .setMessage("${r.year} 年 ${r.month} 月 · ${r.category}\n收入 ¥ ${Rules.money(r.incomeCents)}\n删除后不可撤销，可先在“我的”中导出备份。")
         .setNegativeButton("取消",null).setPositiveButton("确认删除") { _,_ -> work { repo.delete(r.id); toast("明细已删除"); after() } }.show()
 }
 
-class DetailActivity : Screen() {
-    override fun onCreate(state: Bundle?) { super.onCreate(state); setup("收入纳税明细详情") }
-    override fun onResume() { super.onResume(); work {
-        val r=repo.get(intent.getStringExtra("id")?:"")
-        if(r==null) { toast("这条明细已不存在"); finish(); return@work }
-        body.removeAllViews(); banner(); card {
-            addView(text(r.category,22f,INK,true)); space(this,16)
-            listOf("收入来源" to r.source,"扣缴义务人" to r.payer,"纳税年度" to "${r.year} 年","纳税月份" to "${r.month} 月",
-                "收入金额" to "¥ ${Rules.money(r.incomeCents)}","已申报税额" to "¥ ${Rules.money(r.declaredCents)}",
-                "已缴税额" to "¥ ${Rules.money(r.paidCents)}","收入日期" to r.date,"备注" to r.note.ifBlank { "无" }).forEach { fieldValue(this,it.first,it.second) }
-        }
-        button("修改明细") { go(EditActivity::class.java,id=r.id) }
-        button("删除明细",outline=true) { confirmDelete(r) { finish() } }
-    } }
-}

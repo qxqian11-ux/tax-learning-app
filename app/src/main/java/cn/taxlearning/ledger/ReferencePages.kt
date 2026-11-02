@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import androidx.core.widget.addTextChangedListener
+import androidx.core.view.doOnLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 private data class Service(val title: String, val subtitle: String, val color: Int, val action: String=title)
@@ -28,12 +29,12 @@ internal fun MainActivity.buildReferenceHome() {
     heroText.addView(type("模拟身份 · 查看年度收入记录",14f),LinearLayout.LayoutParams(-1,-2).apply { topMargin=u(13) })
     val record=type("查看记录",17f,Color.WHITE,true).apply { gravity=Gravity.CENTER;background=gradient(0xFF197EEB.toInt(),0xFF4B97FF.toInt(),28) }
     heroText.addView(record,LinearLayout.LayoutParams(u(169),u(48)).apply { topMargin=u(23) });clickable(record,null) { go(IncomeListActivity::class.java,Rules.currentYear()-1) }
-    hero.addView(heroText,FrameLayout.LayoutParams(-1,-1));section.addView(hero,LinearLayout.LayoutParams(-1,u(214)))
+    hero.addView(heroText,FrameLayout.LayoutParams(-1,-1));section.addView(hero,LinearLayout.LayoutParams(-1,u(if(largeText)280 else 214)))
     section.addView(type("重点服务推荐",19f,INK,true),LinearLayout.LayoutParams(-1,-2).apply { topMargin=u(43);bottomMargin=u(17) })
     val deduction=column().apply { background=gradient(Color.WHITE,0xFFE8F4FF.toInt(),13);setPadding(u(13),u(11),u(13),u(15)) }
     val title=row();title.addView(ReferenceIcon(this,"notice",0xFFFF534F.toInt()),LinearLayout.LayoutParams(u(21),u(21)).apply { marginEnd=u(7) });title.addView(type("专项附加扣除",16f,INK,true),LinearLayout.LayoutParams(0,-2,1f))
     val policy=type("相关政策 ›",14f,Color.WHITE).apply { background=gradient(0xFFB6DAFF.toInt(),0xFF72B3F6.toInt(),10);setPadding(u(13),u(10),u(8),u(10)) };title.addView(policy);clickable(policy,null) { info("专项附加扣除") };deduction.addView(title)
-    val filled=row().apply { gravity=Gravity.CENTER };filled.addView(type("模拟填报 ",17f,INK,true));filled.addView(type("3",28f,0xFFFFB745.toInt(),true));filled.addView(type(" 项专项附加扣除",17f,INK,true));deduction.addView(filled,LinearLayout.LayoutParams(-1,-2).apply { topMargin=u(24);bottomMargin=u(17) })
+    val filled=type("模拟填报 3 项专项附加扣除",17f,INK,true).apply { gravity=Gravity.CENTER;text=android.text.SpannableString(text).apply { setSpan(android.text.style.RelativeSizeSpan(1.6f),5,6,0);setSpan(android.text.style.ForegroundColorSpan(0xFFFFB745.toInt()),5,6,0) } };deduction.addView(filled,LinearLayout.LayoutParams(-1,-2).apply { topMargin=u(24);bottomMargin=u(17) })
     val actions=row().apply { setPadding(u(30),0,u(30),0) }
     listOf("填报","我要查询").forEachIndexed { i,s -> val action=type(s,14f,Color.WHITE,true).apply { gravity=Gravity.CENTER;background=if(i==0)gradient(0xFF26A5FC.toInt(),0xFF008FF4.toInt(),28) else gradient(0xFFFFD249.toInt(),0xFFFFAE00.toInt(),28) };actions.addView(action,LinearLayout.LayoutParams(0,u(46),1f).apply { if(i==0)marginEnd=u(4) });clickable(action,null) { info(if(i==0)"专项附加扣除填报" else "专项附加扣除查询") } };deduction.addView(actions);section.addView(deduction)
     val horizontal=HorizontalScrollView(this).apply { isHorizontalScrollBarEnabled=false;clipToPadding=false }
@@ -44,10 +45,10 @@ internal fun MainActivity.buildReferenceHome() {
         val card=column().apply { background=rounded();setPadding(u(9),u(16),u(8),u(12)) }
         card.addView(type(item.title,14f).apply { minLines=2 });card.addView(type(item.subtitle,11f,0xFF999DA3.toInt()))
         frame.addView(card,FrameLayout.LayoutParams(-1,-1).apply { topMargin=u(28) })
-        frame.addView(ReferenceIcon(this,"document",item.color),FrameLayout.LayoutParams(u(34),u(34)).apply { leftMargin=u(12) })
+        frame.addView(ReferenceIcon(this,serviceIcon(item.title),item.color),FrameLayout.LayoutParams(u(34),u(34)).apply { leftMargin=u(12) })
         val tag=type(listOf("去申报","去查询","去开具","去填报","去使用")[index],13f,item.color,true).apply { background=rounded(light(item.color),12);setPadding(u(10),u(4),u(7),u(4)) }
         frame.addView(tag,FrameLayout.LayoutParams(-2,-2,Gravity.BOTTOM or Gravity.END))
-        clickable(frame,null) { openService(item.action) };tiles.addView(frame,LinearLayout.LayoutParams(u(118),u(155)).apply { if(index<entries.lastIndex)marginEnd=u(8) })
+        clickable(frame,null) { openService(item.action) };tiles.addView(frame,LinearLayout.LayoutParams(u(if(largeText)145 else 118),u(if(largeText)210 else 155)).apply { if(index<entries.lastIndex)marginEnd=u(8) })
     }
     horizontal.addView(tiles);section.addView(horizontal,LinearLayout.LayoutParams(-1,-2));horizontal.post { horizontal.scrollTo(homeCardScroll,0) };horizontal.setOnScrollChangeListener { _,x,_,_,_ -> homeCardScroll=x }
     val promo=FrameLayout(this).apply { background=gradient(0xFF51CDED.toInt(),0xFF08BDE9.toInt(),10);clipToOutline=true }
@@ -57,7 +58,7 @@ internal fun MainActivity.buildReferenceHome() {
     val feedTabs=row();val articles=column()
     fun fillArticles() {
         feedTabs.removeAllViews();articles.removeAllViews()
-        listOf("警示案例","通知公告","热点问题","政策解读").forEachIndexed { index,s -> val t=type(s,16f,if(index==homeFeedTab)0xFF008CE2.toInt() else INK,index==homeFeedTab).apply { gravity=Gravity.CENTER };feedTabs.addView(t,LinearLayout.LayoutParams(0,u(35),1f));clickable(t,null) { homeFeedTab=index;fillArticles() } }
+        listOf("警示案例","通知公告","热点问题","政策解读").forEachIndexed { index,s -> val t=type(s,if(largeText)14f else 16f,if(index==homeFeedTab)0xFF008CE2.toInt() else INK,index==homeFeedTab).apply { gravity=Gravity.CENTER };feedTabs.addView(t,LinearLayout.LayoutParams(0,u(if(largeText)50 else 35),1f));clickable(t,null) { homeFeedTab=index;fillArticles() } }
         val titles=when(homeFeedTab) {
             0 -> listOf("办理汇算想便捷 APP密码要记牢","获取退税想及时 准确卡号必须有","未依法办理个人所得税综合所得汇算清缴案件","未在法定期限内办理综合所得汇算清缴、虚假填报子女教育专项附加扣除案件")
             1 -> listOf("学习版使用说明","模拟记录备份与恢复提醒")
@@ -87,19 +88,21 @@ internal fun MainActivity.buildReferenceServices() {
             val line=row().apply { gravity=Gravity.TOP }
             chunk.forEachIndexed { index,item ->
                 val tile=column().apply { background=rounded(0xFFF8F9FB.toInt(),10);setPadding(u(10),u(14),u(8),u(10)) }
-                tile.addView(ReferenceIcon(this,"document",item.color),LinearLayout.LayoutParams(u(29),u(29)))
+                tile.minimumHeight=u(139)
+                tile.addView(ReferenceIcon(this,serviceIcon(item.title),item.color),LinearLayout.LayoutParams(u(29),u(29)))
                 tile.addView(type(item.title,14f,INK,true),LinearLayout.LayoutParams(-1,-2).apply { topMargin=u(14);bottomMargin=u(8) });tile.addView(type(item.subtitle,11f,0xFF999DA3.toInt()))
-                clickable(tile,null) { openService(item.action) };line.addView(tile,LinearLayout.LayoutParams(0,u(139),1f).apply { if(index<2)marginEnd=u(7) })
+                clickable(tile,null) { openService(item.action) };line.addView(tile,LinearLayout.LayoutParams(0,-2,1f).apply { if(index<2)marginEnd=u(7) })
             }
             repeat(3-chunk.size){line.addView(View(this),LinearLayout.LayoutParams(0,1,1f).apply { if(it<2-chunk.size)marginEnd=u(7) })}
             outer.addView(line,LinearLayout.LayoutParams(-1,-2).apply { if(lineIndex>0)topMargin=u(8) })
+            line.doOnLayout { measured -> for(index in 0 until line.childCount) { val child=line.getChildAt(index);if(child.measuredHeight<measured.height)child.layoutParams=child.layoutParams.apply { height=measured.height } } }
         }
         parent.addView(outer)
     }
     heading("办税")
     val tax=column().apply { background=rounded();setPadding(u(13),u(13),u(13),u(13)) }
     listOf(Service("综合所得年度汇算","申报与查询综合所得年度汇算",blue),Service("专项附加扣除","填报与查询7项专项附加扣除信息",amber)).forEachIndexed { index,item ->
-        val feature=row().apply { background=rounded(light(item.color),5);setPadding(u(16),u(16),u(10),u(14)) };val copy=column();copy.addView(type(item.title,18f,if(index==0)0xFF1C5D91.toInt() else 0xFF996116.toInt(),true));copy.addView(type(item.subtitle,13f,if(index==0)0xFF668FB4.toInt() else 0xFFBC965B.toInt()),LinearLayout.LayoutParams(-1,-2).apply { topMargin=u(9) });feature.addView(copy,LinearLayout.LayoutParams(0,-2,1f));feature.addView(ReferenceIcon(this,"document",item.color),LinearLayout.LayoutParams(u(44),u(44)));clickable(feature,null) { openService(item.action) };tax.addView(feature,LinearLayout.LayoutParams(-1,u(78)).apply { if(index==0)bottomMargin=u(13) })
+        val feature=row().apply { background=rounded(light(item.color),5);setPadding(u(16),u(16),u(10),u(14)) };val copy=column();copy.addView(type(item.title,18f,if(index==0)0xFF1C5D91.toInt() else 0xFF996116.toInt(),true));copy.addView(type(item.subtitle,13f,if(index==0)0xFF668FB4.toInt() else 0xFFBC965B.toInt()),LinearLayout.LayoutParams(-1,-2).apply { topMargin=u(9) });feature.addView(copy,LinearLayout.LayoutParams(0,-2,1f));feature.addView(ReferenceIcon(this,"document",item.color),LinearLayout.LayoutParams(u(44),u(44)));clickable(feature,null) { openService(item.action) };tax.addView(feature,LinearLayout.LayoutParams(-1,-2).apply { if(index==0)bottomMargin=u(13) })
     }
     group(listOf(Service("个人养老金扣除管理","录入或查看个人养老金扣除信息",blue),Service("经营所得申报","取得经营所得后办理申报",green),Service("纳税记录开具","生成或查看纳税记录",green,"纳税记录"),Service("公益慈善捐赠扣除填报","录入或查看准予扣除的捐赠记录",purple),Service("委托代理关系管理","委托代理机构或个人代办年度汇算",amber),Service("涉税服务人员信息管理","填报涉税服务人员信息与申领信用码",blue)),tax)
     val warning=row().apply { setPadding(u(6),u(4),0,0) };warning.addView(ServiceArtwork(this,"warning"),LinearLayout.LayoutParams(u(107),u(70)));warning.addView(type("警示案例 ›",18f,INK,true),LinearLayout.LayoutParams(0,-2,1f));clickable(warning,null) { info("警示案例") };tax.addView(warning);page.addView(tax)
@@ -139,3 +142,13 @@ private fun MainActivity.showServiceSearch() {
     input.addTextChangedListener { update() };results.setOnItemClickListener { _,_,index,_ -> dialog.dismiss();openService(filtered[index]) };update();dialog.show()
 }
 private fun light(color: Int)=Color.rgb((Color.red(color)*.12+255*.88).toInt(),(Color.green(color)*.12+255*.88).toInt(),(Color.blue(color)*.12+255*.88).toInt())
+private fun serviceIcon(title: String) = when {
+    title.contains("收入纳税") -> "income"
+    title.contains("年度汇算") -> "annual"
+    title.contains("纳税记录") -> "record"
+    title.contains("扣除") -> "deduction"
+    title.contains("扫码") || title.contains("票证") -> "invoice"
+    title.contains("人员") || title.contains("机构") -> "personnel"
+    title.contains("查询") || title.contains("申报记录") -> "lookup"
+    else -> "document"
+}

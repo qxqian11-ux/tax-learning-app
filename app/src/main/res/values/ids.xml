@@ -3,4 +3,5 @@
     <item name="profile_identity_toggle" type="id"/><item name="profile_personal" type="id"/>
     <item name="profile_family" type="id"/><item name="profile_employment" type="id"/><item name="profile_bank" type="id"/>
     <item name="profile_care" type="id"/><item name="profile_security" type="id"/><item name="profile_help" type="id"/><item name="profile_consult" type="id"/><item name="profile_about" type="id"/><item name="profile_logout" type="id"/>
+<item name="page_scroll" type="id"/><item name="query_year" type="id"/><item name="query_submit" type="id"/><item name="income_filter" type="id"/><item name="income_statistics" type="id"/><item name="income_add" type="id"/>
 </resources>

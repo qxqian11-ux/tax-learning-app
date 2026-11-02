@@ -22,7 +22,8 @@ class MainActivity : Screen() {
     private lateinit var sticky: FrameLayout
     private val settings by lazy { getSharedPreferences("settings", MODE_PRIVATE) }
     private val scale get() = (resources.displayMetrics.widthPixels / resources.displayMetrics.density / 400f).coerceIn(.85f, 1.2f)
-    private val care get() = settings.getBoolean("care_mode", false)
+    internal val care get() = settings.getBoolean("care_mode", false)
+    internal val largeText get() = care || resources.configuration.fontScale>1.12f
     internal fun u(value: Int) = dp((value * scale).roundToInt())
     internal fun type(value: String, size: Float = 15f, color: Int = INK, bold: Boolean = false) = text(value, size * scale * if(care) 1.18f else 1f, color, bold).apply {
         includeFontPadding = false; setLineSpacing(u(3).toFloat(), 1f)
@@ -67,7 +68,7 @@ class MainActivity : Screen() {
         body.removeAllViews();body.setPadding(0,0,0,u(106));renderNavigation()
         sticky.removeAllViews();scroll.setPadding(0,0,0,0);body.background=rounded(BG,0)
         if(tab==0){sticky.addView(buildSearchBar());scroll.setPadding(0,u(46),0,0);body.background=PageTopBackground(u(148))}
-        if(tab==2){val top=row().apply { background=gradient(0xFF287CF5.toInt(),0xFF72A6F9.toInt(),0);setPadding(u(13),u(28),u(13),u(16)) };top.addView(type("办&查",26f,Color.WHITE,true));top.addView(type("请选择您需要办理或查询的事项",12f,0xFFBFE0FF.toInt()),LinearLayout.LayoutParams(0,-2,1f).apply { marginStart=u(12) });sticky.addView(top,FrameLayout.LayoutParams(-1,u(73)));scroll.setPadding(0,u(73),0,0)}
+        if(tab==2){val top=row().apply { background=gradient(0xFF287CF5.toInt(),0xFF72A6F9.toInt(),0);setPadding(u(13),u(28),u(13),u(16)) };top.addView(type("办&查",26f,Color.WHITE,true));top.addView(type("请选择您需要办理或查询的事项",12f,0xFFBFE0FF.toInt()),LinearLayout.LayoutParams(0,-2,1f).apply { marginStart=u(12) });sticky.addView(top,FrameLayout.LayoutParams(-1,u(if(largeText)105 else 73)));scroll.setPadding(0,u(if(largeText)105 else 73),0,0)}
         when(tab) { 0 -> renderHome();1 -> renderTodo();2 -> renderServices();3 -> renderMessages();else -> renderProfile() }
         scroll.post { scroll.scrollTo(0,positions[tab]) }
     }
@@ -102,13 +103,13 @@ class MainActivity : Screen() {
             tile.addView(type(item.first,15f,INK,true),LinearLayout.LayoutParams(-2,-2).apply { topMargin=u(8) })
             tile.addView(type(if(active)item.second else "—",12f,Color.WHITE).apply { background=rounded(0xFF458DF8.toInt(),12);setPadding(u(9),u(2),u(9),u(2));gravity=Gravity.CENTER },LinearLayout.LayoutParams(-2,-2).apply { topMargin=u(12) })
             clickable(tile,null) { if(active)info(listOf("家庭成员信息","任职受雇信息","银行卡信息")[i]) else showDemoLogin() }
-            shortcuts.addView(tile,LinearLayout.LayoutParams(0,u(if(care)140 else 118),1f).apply { if(i<2)marginEnd=u(12) })
+            shortcuts.addView(tile,LinearLayout.LayoutParams(0,u(if(largeText)140 else 118),1f).apply { if(i<2)marginEnd=u(12) })
         }
         body.addView(shortcuts,LinearLayout.LayoutParams(-1,-2).apply { topMargin=-u(18) })
         val menus=column().apply { background=rounded();setPadding(u(19),u(7),u(19),u(7)) }
         val titles=listOf(if(care)"切换标准版" else "切换关怀版","安全中心","帮助中心","我要咨询","关于&更新")
         titles.forEachIndexed { index, title ->
-            val line=row().apply { id=listOf(R.id.profile_care,R.id.profile_security,R.id.profile_help,R.id.profile_consult,R.id.profile_about)[index];minimumHeight=u(if(care)56 else 48) }
+            val line=row().apply { id=listOf(R.id.profile_care,R.id.profile_security,R.id.profile_help,R.id.profile_consult,R.id.profile_about)[index];minimumHeight=u(if(largeText)56 else 48) }
             line.addView(ReferenceIcon(this,listOf("care","security","help","consult","about")[index],0xFF242C32.toInt()),LinearLayout.LayoutParams(u(26),u(26)).apply { marginEnd=u(15) })
             line.addView(type(title,15f),LinearLayout.LayoutParams(0,-2,1f));line.addView(type("›",28f,INK))
             clickable(line,null) { if(index==0){settings.edit().putBoolean("care_mode",!care).apply();render()}else info(titles[index]) };menus.addView(line)

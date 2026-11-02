@@ -1,5 +1,11 @@
 """Build the shareable delivery folder; signing and account credentials stay private."""
 from pathlib import Path
+
+# Preserve the historical 1.0.0 delivery filenames.
+import re as _version_re
+_build_text = (Path(__file__).resolve().parents[1] / 'app/build.gradle').read_text('utf-8-sig')
+if _version_re.search(r"versionName\s+'([^']+)'", _build_text).group(1) != '1.0.0':
+    raise SystemExit('This is the historical 1.0.0 delivery script. Use scripts/package_source_current.py for the current version.')
 import hashlib
 import json
 import shutil

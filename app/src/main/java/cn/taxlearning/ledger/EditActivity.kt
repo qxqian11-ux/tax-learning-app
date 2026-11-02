@@ -23,9 +23,10 @@ class EditActivity : Screen() {
     private var initial=""
     private var loaded=false
     private var saving=false
+    private lateinit var formGroup: LinearLayout
     override fun onCreate(state: Bundle?) {
         super.onCreate(state); editing=intent.hasExtra("id"); rowId=intent.getStringExtra("id")?:state?.getString("rowId")?:rowId
-        setup(if(editing) "修改收入明细" else "新增收入明细")
+        setup(if(editing) "修改收入明细" else "新增收入明细",edgeToEdge=true)
         onBackPressedDispatcher.addCallback(this,object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if(saving) { toast("正在保存，请稍候"); return }
@@ -42,20 +43,24 @@ class EditActivity : Screen() {
             month=state?.getInt("month")?:r?.month?:(Calendar.getInstance().get(Calendar.MONTH)+1)
             category=state?.getString("category")?:r?.category?:category
             date=state?.getString("date")?:r?.date?:String.format(Locale.ROOT,"%04d-%02d-01",year,month)
-            banner("请仅填写模拟资料；金额单位：元")
+            banner("模拟记录 · 金额单位：元")
+            group("纳税信息")
             val years=Rules.years()
-            spinner(body,"纳税年度 *",years.map { "$it 年" },years.indexOf(year)) { year=years[it] }
-            space(body)
-            spinner(body,"纳税月份 *",(1..12).map { "${it}月" },month-1) { month=it+1 }
-            space(body)
-            spinner(body,"所得项目 *",Rules.categories,Rules.categories.indexOf(category)) { category=Rules.categories[it] }
-            space(body)
+            spinner(formGroup,"纳税年度 *",years.map { "$it 年" },years.indexOf(year)) { year=years[it] }
+            space(formGroup)
+            spinner(formGroup,"纳税月份 *",(1..12).map { "${it}月" },month-1) { month=it+1 }
+            space(formGroup)
+            spinner(formGroup,"所得项目 *",Rules.categories,Rules.categories.indexOf(category)) { category=Rules.categories[it] }
+            space(formGroup)
+            group("收入与扣缴信息")
             field("source","收入来源 *",state?.getString("source")?:r?.source?:"",100)
             field("payer","扣缴义务人 *",state?.getString("payer")?:r?.payer?:"",100)
+            group("金额信息")
             field("income","收入金额 *",state?.getString("income")?:r?.let { Rules.decimal(it.incomeCents) }?:"",13,true)
             field("declared","已申报税额 *",state?.getString("declared")?:r?.let { Rules.decimal(it.declaredCents) }?:"",13,true)
             field("paid","已缴税额 *",state?.getString("paid")?:r?.let { Rules.decimal(it.paidCents) }?:"",13,true)
-            val dateButton=button("收入日期 *  $date",outline=true) {}
+            group("日期与备注")
+            val dateButton=button("收入日期 *  $date",formGroup,outline=true) {}
             dateButton.setOnClickListener {
                 val p=date.split("-").map { it.toInt() }
                 DatePickerDialog(this@EditActivity,{ _,y,m,d ->
@@ -65,22 +70,28 @@ class EditActivity : Screen() {
                     datePicker.maxDate=Calendar.getInstance().apply { clear(); set(Rules.currentYear(),11,31) }.timeInMillis
                 }.show()
             }
-            space(body)
+            space(formGroup)
             field("note","备注（选填）",state?.getString("note")?:r?.note?:"",500)
-            body.addView(text("无扣缴方可填写“自行申报（模拟）”。收入日期的年份应与纳税年度一致。",12f,MUTED))
-            button("保存明细") { save() }
+            formGroup.addView(text("无扣缴方可填写“自行申报（模拟）”。收入日期的年份应与纳税年度一致。",12f,MUTED))
+            val saveBar=column().apply { setPadding(dp(17),dp(8),dp(17),dp(12));setBackgroundColor(android.graphics.Color.WHITE) }
+            flatButton("保存明细",saveBar) { save() };root.addView(saveBar)
             initial=state?.getString("initial")?:snapshot(); loaded=true
         }
     }
+    private fun group(title: String) {
+        space(body,12);sectionHeader(title)
+        formGroup=column().apply { setPadding(dp(17),dp(12),dp(17),dp(8));setBackgroundColor(android.graphics.Color.WHITE) }
+        body.addView(formGroup)
+    }
     private fun field(key: String, title: String, value: String, max: Int, money: Boolean=false) {
-        val l=TextInputLayout(this).apply { hint=title; boxBackgroundMode=TextInputLayout.BOX_BACKGROUND_OUTLINE; setBoxCornerRadii(dp(10).toFloat(),dp(10).toFloat(),dp(10).toFloat(),dp(10).toFloat()); isHintEnabled=true }
+        val l=TextInputLayout(this).apply { hint=title; boxBackgroundMode=TextInputLayout.BOX_BACKGROUND_NONE; setBoxCornerRadii(dp(10).toFloat(),dp(10).toFloat(),dp(10).toFloat(),dp(10).toFloat()); isHintEnabled=true }
         val input=TextInputEditText(l.context).apply {
             setText(value); setTextColor(INK); textSize=15f; minHeight=dp(56)
             inputType=if(money) InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL else InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
             if(key=="note") { inputType=InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE; minLines=3; maxLines=5 }
             filters=arrayOf(InputFilter.LengthFilter(max)); isSaveEnabled=false
         }
-        l.addView(input,LinearLayout.LayoutParams(-1,-2)); body.addView(l,LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=dp(14) })
+        l.addView(input,LinearLayout.LayoutParams(-1,-2)); formGroup.addView(l,LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=dp(14) })
         fields[key]=input; layouts[key]=l
     }
     private fun value(k: String)=fields.getValue(k).text.toString().trim()

@@ -1,67 +1,44 @@
 # 税知账 · 个人所得税学习版
 
-独立的 Kotlin / Android 原生课程项目，仅记录模拟收入，不属于任何政府机构，不连接税务系统。
+当前版本 **1.1.0 / versionCode 2**。独立的 Kotlin / Android 原生课程项目，参考用户提供的页面截图实现蓝白界面，所有身份、收入与税额均用于模拟学习，不连接真实税务系统。
 
-已发布：[下载页面](https://github.com/qxqian11-ux/tax-learning-app/releases/tag/v1.0.0) · [签名 Release APK](https://github.com/qxqian11-ux/tax-learning-app/releases/download/v1.0.0/tax-learning-1.0.0-release.apk)。二维码在 `output/APK下载二维码.png`。远程下载内容已与本地 SHA-256 比对一致。
+下载与历史版本见 [GitHub Releases](https://github.com/qxqian11-ux/tax-learning-app/releases)。新版交付集中在 `output/v1.1.0/`，原 `output/税知账-1.0.0-release.apk` 和旧二维码保留。安装时可用同包名、同签名 APK 覆盖升级，升级前建议先导出 JSON 备份。
 
-## 快速开始
+## 页面与功能
 
-Android Studio 打开本目录，使用 JDK 21（编译目标 Java 17）、SDK 34、Gradle 8.7。最低 Android 7.0 / API 24。开发机已存在的 SDK 在 `D:\tax_project\Android SDK`，JDK 在 `D:\java\jdk\jdk-21.0.11`。`local.properties` 是本机路径，不在源码包中。
+- 首页、待办、办&查、消息、我的五项固定导航；页面滚动、首页横向卡片和资讯分类状态保留。
+- 个人中心包含蓝色渐变头像区、浅橙模拟身份卡、三个数量卡片、五项菜单、关怀版及模拟退出/登录。
+- 首页和办&查按照参考图组织卡片及服务分组；收入查询、统计和文件备份连接真实本地业务功能。
+- 收入明细按年查询、增删改查、月份/所得项目筛选、全年和分类统计，使用 Room + SQLite。
+- 年度范围为 2019 至系统当前年份。原所得类别继续兼容，另补充参考图中的所得类别名称。
+- 金额以 Long 整数分存储，使用 BigDecimal 校验和转换；原数据库 schema 版本 1 保持不变。
+- 系统文件选择器导出 CSV / JSON；JSON 校验、重复跳过、内容冲突事务回滚与异常恢复保护。
+- 首次示例与初始化标记在同一事务中写入；后续启动不重新生成已删记录。
+- 自定义图标、头像及矢量插画，无 Google Play 依赖，无联网、通讯录、定位或广泛存储权限。
 
-首次发布前执行 `scripts/create-signing.ps1`（仅执行一次），再执行 `scripts/build.ps1`。独立 Release 签名位于 `signing/`，不能丢失或提交到代码仓库。Debug 与 Release 使用不同包名，数据彼此独立。
+非核心税务入口为明确标注的学习展示，不提供真实申报、银行或实名认证。详情中原模型没有维护的扣除与机构信息显示为“—”或“未维护”。新增和修改页尚无参考截图，采用统一的蓝白分组表单，待视觉核对。
 
-## 已实现的功能
+## 构建
 
-- 首页 / 我的双底部导航，所有入口均可操作；辅助业务使用明确标注的学习说明页。
-- 2019 年至系统当前年份的年度选择、所得类型选择、月度及所得项目筛选。
-- 明细完整增删改查，删除确认，退出编辑确认，每页 50 笔。
-- 全年收入、已申报、已缴税额，月份与所得项目条形图；数据库变化自动刷新。
-- Room / SQLite 私有数据库，UUID 主键，年度索引；首次初始化标记与示例记录处于同一事务，删除后不会重生。
-- BigDecimal 校验转换为 Long 整数分，全程精确求和，输入最多两位小数。
-- 系统文件选择器导出 CSV / JSON，按年或全量；JSON 验证、重复跳过、冲突整次回滚。
-- 自定义矢量与自适应图标，屏幕截屏保护开关，无网络或存储权限。
+Android Studio 打开项目，JDK 21（字节码目标 Java 17）、SDK 34、AGP 8.4.2、Gradle 8.7。最低 Android 7.0 / API 24。开发机 JDK 位于 `D:\java\jdk\jdk-21.0.11`，SDK 位于 `D:\tax_project\Android SDK`。本机 `local.properties` 不包含在公开源码包中。
 
-## 项目结构
+执行 `scripts/build.ps1` 可运行单元测试、Lint 并生成 Debug / Release。签名保存在本机 `signing/`；创建独立开发副本时使用自己的密钥，原应用升级必须保留原正式密钥。签名私钥与密码不包含在源码包或 Git 仓库中。
 
-```text
-app/src/main/java/cn/taxlearning/ledger/
-  Model.kt          实体、DAO、金额与业务校验
-  Repository.kt     数据库、首次初始化、事务与异步数据接口
-  BackupCodec.kt    JSON 校验和序列化、CSV 转义
-  Ui.kt             通用 UI、主页、查询、列表和详情
-  EditActivity.kt   增改表单及错误提示
-  StatsActivity.kt  月份及所得项目统计图
-  BackupActivity.kt 系统文件选择器导入导出
-  InfoActivity.kt   模拟资料、设置及业务说明
-app/src/test/       金额、日期、备份及汇总单元测试
-app/src/androidTest/  SQLite 持久化及事务集成测试
-app/schemas/        Room schema
-assets/             原创图标导出
-docs/               架构、验收、安装和签名说明
-scripts/            构建、签名、发布及二维码工具
-output/             交付包（忽略 Git）
-signing/            本地密钥和密码（忽略 Git，禁止公开）
-```
+## 代码结构
 
-## 数据及导入规则
+- `Ui.kt`：通用 Screen、布局和交互辅助。
+- `ReferenceMain.kt`：五项导航、个人中心、待办和消息。
+- `ReferencePages.kt`：首页、服务目录、搜索和资讯。
+- `ReferenceIcon.kt`、`ServiceArtwork.kt`：自定义本地矢量素材。
+- `IncomeScreens.kt`：收入查询、年度选择、列表与详情。
+- `EditActivity.kt`：录入/修改表单、日期、字段校验与保存。
+- `Model.kt`、`Repository.kt`、`BackupCodec.kt`：实体/DAO、精确金额、数据持久化和备份事务。
+- `app/src/test`、`app/src/androidTest`：可独立运行的 JVM 与 Android 集成测试。
 
-数据库 `learning-ledger.db` 位于应用私有目录。每条记录必须带纳税年度，查询始终按年限定。收入日期必须有效且年份与纳税年度一致，纳税月份可独立指定。扣缴义务人为必填，无扣缴方填写“自行申报（模拟）”。单金额上限 9,999,999,999.99 元，数据库上限 10,000 条，避免 Long 汇总溢出。所有金额仅为用户录入，应用不进行法定税额计算。
+`acceptance/` 是独立 UI 验收工具，按测试方法执行并保留了历史阶段方法和中断清理方法；不属于发布 APK，也不应作为普通应用安装。正式 UI 数据回归针对专用模拟器中的 1.0.0 既有模拟记录，依赖对应备份文件。通用开发验证可运行应用自身的测试。
 
-备份格式为 `format=tax-learning-backup`、`version=1`，金额字段以整数分表示。导入上限 64 MB / 10,000 条，覆盖数据库全部容量；先检查所有记录，再在单一事务中合并。相同 UUID 和内容跳过；同 UUID 不同内容拒绝整次导入。复制记录应从界面新增，不应修改备份 UUID。CSV 使用 UTF-8 BOM、CRLF、双引号转义，并防护常见表格公式前缀；CSV 不用于恢复。
+## 回退与验证
 
-修改一条记录的年度后，该记录会从旧年度移入新年度。列表年度汇总始终为全年数据；筛选合计只统计所选月份及项目，二者分别标注。
+重构前备份位于 `backup/before-ui-1.0.0-*`，Git 基线为 `1ce9b28d87a0dc053b1815af5a6dfabe5dc10b98`。原数据库结构、Repository、备份算法和金额精度保留。
 
-## 环境与交付状态
-
-项目已迁移到 `D:\PersonalTaxLearningApp`，并在该目录构建成功。初期曾因自动审批服务连接中断暂存到授权工作区；审批恢复后已完成 D 盘迁移，无需重复安装 Android Studio 或 SDK。新下载的无 Google 服务 Android 11 测试镜像位于 D 盘现有 SDK，测试虚拟机位于项目 `.android/`（不包含在源码包中）。
-
-实际构建、测试和发布结果以 `docs/验证结果.md` 为准；不可仅凭源码或任务书判断已经通过真机测试。HarmonyOS 4.2.0 以 APK 兼容环境为目标；HarmonyOS NEXT 不支持此 APK。
-
-## 参考资料
-
-- [税务机关关于最新版 App 查询入口的说明（2026-01）](https://guangxi.chinatax.gov.cn/nsfw/nszx/rdwd/202601/t20260115_427903.html)：参考首页、年度与所得类型查询流程，不复制官方品牌。
-- [Android Room](https://developer.android.com/jetpack/androidx/releases/room)：本项目固定使用 2.6.1 以适配现有工具链。
-- [Android 系统文件选择器](https://developer.android.com/training/data-storage/shared/documents-files)：使用 SAF，无需广泛存储权限。
-- [AGP 8.4 兼容说明](https://developer.android.com/build/releases/agp-8-4-0-release-notes)：使用现有 AGP 8.4.2 与 SDK 34。
-
-用户提供的任务书原文在第 14.1 节第 7 项处结束；该处之后的要求未包含在附件中。
+本轮说明、原始文件校验和运行截图见 `docs/*-1.1.0.txt` 与 `output/v1.1.0/evidence`。HarmonyOS 4.2.0 真机待用户测试；模拟器通过不等同于该手机已通过。HarmonyOS NEXT 不在本 APK 的目标范围内。

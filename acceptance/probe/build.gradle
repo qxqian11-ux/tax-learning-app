@@ -1,0 +1,12 @@
+plugins { id 'com.android.application' }
+android {
+ namespace 'cn.taxlearning.acceptance'
+ compileSdk 34
+ defaultConfig { applicationId 'cn.taxlearning.acceptance'; minSdk 24; targetSdk 34; versionCode 1; versionName '1'; testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner' }
+ compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}
+dependencies {
+ androidTestImplementation 'androidx.test:runner:1.5.2'
+ androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+ androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+}

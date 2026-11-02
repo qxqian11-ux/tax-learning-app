@@ -32,7 +32,21 @@ internal class ReferenceIcon(context: Context, private val kind: String, private
             "scan" -> {path(4f,10f,4f,4f,10f,4f);path(22f,4f,28f,4f,28f,10f);path(28f,22f,28f,28f,22f,28f);path(10f,28f,4f,28f,4f,22f);path(10f,16f,22f,16f)}
             "notice" -> {p.style=Paint.Style.FILL;c.drawRoundRect(9f,4f,23f,23f,7f,7f,p);c.drawRoundRect(5f,21f,27f,25f,2f,2f,p);c.drawCircle(16f,28f,2f,p)}
             "eye" -> {c.drawArc(4f,5f,28f,21f,15f,150f,false,p);if(active)c.drawCircle(16f,13f,3f,p)else{path(8f,19f,6f,23f);path(16f,21f,16f,25f);path(24f,19f,26f,23f)}}
-            else -> {p.style=Paint.Style.FILL;c.drawRoundRect(3f,3f,29f,29f,7f,7f,p);p.style=Paint.Style.STROKE;p.color=Color.WHITE;c.drawRoundRect(9f,9f,23f,23f,2f,2f,p);path(12f,14f,20f,14f);path(12f,18f,17f,18f)}
+            else -> {
+                p.style=Paint.Style.FILL;p.color=0x339DC3E8;c.drawRoundRect(4f,1f,27f,28f,6f,6f,p);p.color=tint
+                p.shader=LinearGradient(4f,4f,28f,29f,intArrayOf(tint,blend(tint,.92f)),null,Shader.TileMode.CLAMP);c.drawRoundRect(3f,4f,29f,30f,6f,6f,p);p.shader=null
+                p.style=Paint.Style.STROKE;p.color=Color.WHITE;p.strokeWidth=2f
+                when(kind){
+                    "income" -> {c.drawRoundRect(8f,10f,25f,24f,3f,3f,p);path(11f,8f,22f,8f);path(16f,13f,19f,16f,22f,13f);path(16f,17f,22f,17f);path(19f,16f,19f,22f)}
+                    "annual" -> {c.drawRoundRect(8f,9f,24f,25f,2f,2f,p);path(11f,14f,21f,14f);path(12f,18f,12f,22f);path(10f,20f,14f,20f);path(19f,19f,22f,19f);path(19f,23f,22f,23f)}
+                    "record" -> {path(8f,11f,23f,11f);path(8f,16f,15f,16f);path(18f,21f,24f,21f,19f,26f,24f,26f)}
+                    "deduction" -> {path(8f,11f,22f,11f);path(8f,17f,14f,17f);path(18f,25f,20f,18f,24f,20f,22f,26f,18f,25f)}
+                    "invoice" -> {c.drawRect(8f,9f,12f,13f,p);c.drawRect(20f,9f,24f,13f,p);c.drawRect(8f,21f,12f,25f,p);path(19f,21f,24f,21f,24f,26f);path(17f,10f,17f,18f,10f,18f)}
+                    "personnel" -> {c.drawRoundRect(7f,10f,25f,25f,2f,2f,p);c.drawCircle(16f,15f,3f,p);c.drawArc(11f,18f,21f,26f,180f,180f,false,p)}
+                    "lookup" -> {path(8f,11f,22f,11f);path(8f,16f,14f,16f);c.drawCircle(21f,22f,4f,p);path(24f,25f,27f,28f)}
+                    else -> {c.drawRoundRect(8f,10f,24f,25f,2f,2f,p);path(11f,15f,21f,15f);path(11f,20f,17f,20f)}
+                }
+            }
         }
         c.restore()
     }

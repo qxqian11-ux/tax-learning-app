@@ -36,9 +36,9 @@ class UiSmokeTest {
     }
     @Test fun testMainQueryEditorStatisticsAndBackupScreens() {
         val screens=listOf(
-            Triple(MainActivity::class.java,"常用业务","01-home"),
-            Triple(QueryActivity::class.java,"选择查询条件","02-query"),
-            Triple(IncomeListActivity::class.java,"年度收入合计","03-records"),
+            Triple(MainActivity::class.java,"重点服务推荐","01-home"),
+            Triple(QueryActivity::class.java,"请选择纳税年度","02-query"),
+            Triple(IncomeListActivity::class.java,"收入合计","03-records"),
             Triple(EditActivity::class.java,"保存明细","04-editor"),
             Triple(StatsActivity::class.java,"月度收入趋势","05-statistics"),
             Triple(BackupActivity::class.java,"备份为 JSON","06-backup")
@@ -60,3 +60,4 @@ class UiSmokeTest {
         }
     }
 }
+

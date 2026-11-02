@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object Rules {
-    val categories = listOf("工资薪金", "劳务报酬", "稿酬", "特许权使用费", "经营所得", "其他所得")
+    val categories = listOf("工资薪金", "劳务报酬", "稿酬", "特许权使用费", "经营所得", "利息、股息、红利", "财产租赁", "财产转让", "偶然所得", "其他所得")
     fun currentYear() = Calendar.getInstance().get(Calendar.YEAR)
     fun years() = (2019..currentYear()).reversed().toList()
     const val MAX_CENTS = 999_999_999_999L
