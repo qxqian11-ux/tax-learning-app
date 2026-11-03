@@ -3,6 +3,8 @@
     <application android:name=".TaxApp" android:allowBackup="false" android:dataExtractionRules="@xml/data_extraction_rules" android:fullBackupContent="false" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:label="@string/app_name" android:supportsRtl="true" android:theme="@style/Theme.TaxLearning">
         <activity android:name=".EmploymentListActivity" android:exported="false" />
         <activity android:name=".EmploymentEditActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".NoticeListActivity" android:exported="false" />
+        <activity android:name=".NoticeEditActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".BackupActivity" android:exported="false" />
         <activity android:name=".InfoActivity" android:exported="false" />
         <activity android:name=".StatsActivity" android:exported="false" />

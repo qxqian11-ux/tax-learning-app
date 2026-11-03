@@ -13,4 +13,17 @@
 <item name="employment_start" type="id"/>
 <item name="employment_end" type="id"/>
 <item name="employment_save" type="id"/>
+<item name="query_year_wheel" type="id"/>
+<item name="query_year_scroll" type="id"/>
+<item name="query_year_cancel" type="id"/>
+<item name="query_year_confirm" type="id"/>
+<item name="query_category_toggle" type="id"/>
+<item name="income_title_add" type="id"/>
+<item name="income_summary_help" type="id"/>
+<item name="home_notice" type="id"/>
+<item name="notice_marquee" type="id"/>
+<item name="notice_title" type="id"/>
+<item name="notice_add" type="id"/>
+<item name="notice_content" type="id"/>
+<item name="notice_save" type="id"/>
 </resources>

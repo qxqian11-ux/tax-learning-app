@@ -16,10 +16,7 @@ private val amber=0xFFFFAF10.toInt()
 
 internal fun MainActivity.buildReferenceHome() {
     val section=column().apply { setPadding(u(13),0,u(13),0) };body.addView(section)
-    val notice=row().apply { background=rounded(0xFFFFF5E2.toInt(),9);setPadding(u(8),u(10),u(8),u(10)) }
-    notice.addView(ReferenceIcon(this,"notice",0xFFFF9226.toInt()),LinearLayout.LayoutParams(u(25),u(25)).apply { marginEnd=u(11) })
-    notice.addView(type("个人所得税综合所得年度汇算学习提醒",15f,0xFF9E6A18.toInt()).apply { isSingleLine=true;ellipsize=android.text.TextUtils.TruncateAt.END },LinearLayout.LayoutParams(0,-2,1f))
-    clickable(notice,null){info("年度汇算学习提醒")};section.addView(notice,LinearLayout.LayoutParams(-1,u(45)).apply {topMargin=u(12);bottomMargin=u(11)})
+    section.addView(HomeNoticeView(this),LinearLayout.LayoutParams(-1,u(45)).apply {topMargin=u(12);bottomMargin=u(11)})
     val hero=FrameLayout(this).apply {background=gradient(0xFFE9F8FF.toInt(),0xFFCEE5FF.toInt(),9);clipToOutline=true}
     hero.addView(ServiceArtwork(this,"hero"),FrameLayout.LayoutParams(-1,-1))
     val topic=type("进入专题页 ›",14f,Color.WHITE).apply {gravity=Gravity.CENTER;background=gradient(0xFFA7CCFA.toInt(),0xFF84B7F8.toInt(),11)}
