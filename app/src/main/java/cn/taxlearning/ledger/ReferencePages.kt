@@ -66,8 +66,8 @@ internal fun MainActivity.buildReferenceHome() {
     fun fillArticles(){
         feedTabs.removeAllViews();articles.removeAllViews()
         listOf("警示案例","通知公告","热点问题","政策解读").forEachIndexed {index,s ->
-            val t=type(s,if(largeText)14f else 16f,if(index==homeFeedTab)0xFF008CE2.toInt() else 0xFF55575B.toInt(),index==homeFeedTab).apply {gravity=Gravity.CENTER}
-            feedTabs.addView(t,LinearLayout.LayoutParams(0,u(if(largeText)50 else 35),1f));clickable(t,null){homeFeedTab=index;fillArticles()}
+            val t=type(s,if(largeText)14f else if(index==homeFeedTab)17f else 15f,if(index==homeFeedTab)0xFF008CE2.toInt() else 0xFF55575B.toInt(),index==homeFeedTab).apply {gravity=if(largeText)Gravity.CENTER else Gravity.START or Gravity.CENTER_VERTICAL}
+            feedTabs.addView(t,if(largeText)LinearLayout.LayoutParams(0,u(50),1f) else LinearLayout.LayoutParams(-2,u(35)).apply {if(index<3)marginEnd=u(12)});clickable(t,null){homeFeedTab=index;fillArticles()}
         }
         val titles=when(homeFeedTab){0->listOf("办理汇算想便捷 APP密码要记牢","获取退税想及时 准确卡号必须有","未依法办理个人所得税综合所得汇算清缴案件","未在法定期限内办理综合所得汇算清缴、虚假填报子女教育专项附加扣除案件");1->listOf("学习版使用说明","模拟记录备份与恢复提醒");2->listOf("如何查询收入纳税明细？","如何备份本机收入数据？");else->listOf("综合所得年度汇算学习","专项附加扣除学习介绍")}
         titles.forEachIndexed {index,titleText ->

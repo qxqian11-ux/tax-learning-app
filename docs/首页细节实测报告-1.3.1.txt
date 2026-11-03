@@ -1,6 +1,6 @@
 税知账1.3.1：首页细节实测报告
 APK：D:\PersonalTaxLearningApp\output\v1.3.1\tax-learning-1.3.1-release.apk
-包名cn.taxlearning.ledger；版本1.3.1/code6；7226000字节；SHA-256：4bbda79d687ee4ea071a38cf72a10fcb4478779b1890871eb66e0565bba1aafd
+包名cn.taxlearning.ledger；版本1.3.1/code6；7226284字节；SHA-256：ea6341a883269c1adc4800732841782b232cc2d305036348c56914af6313e4ee
 正式签名与1.3.0相同，v2验证通过；最低API24、目标SDK34，无新增敏感权限。
 
 测试环境：Android11/API30模拟器，1216×2688、density486。覆盖安装保留原应用数据；读取已安装base.apk并核对SHA等于上述最终APK。
@@ -13,7 +13,7 @@ APK：D:\PersonalTaxLearningApp\output\v1.3.1\tax-learning-1.3.1-release.apk
 - 实际通过系统文件选择器导出两份JSON，原6条收入记录的UUID和全部字段前后完全一致；任职0家/空列表、原1条广播状态一致。没有保存/删除业务测试记录。
 - 5项JVM单元测试通过；Lint错误0、警告48。本轮为首页样式与按钮命中区调整，未重复运行上一版4项数据库集成测试；未把旧结果当本轮测试。
 
-最终证据目录：D:\PersonalTaxLearningApp\output\v1.3.1\evidence\ui131-home-20261103-133835
+最终证据目录：D:\PersonalTaxLearningApp\output\v1.3.1\evidence\ui131-home-20261103-135152
 包括instrumentation.log、steps.log、PNG/XML、真实income-before/final.json、home-header-metrics.json。未发布的较早候选APK和证据若保留，按SHA及home-audit-result.json区分；最终检查以此报告SHA为准。
 受保护的数据层、备份、任职、广播、收入页面与编辑页源码与旧源码ZIP逐字节一致。
 
