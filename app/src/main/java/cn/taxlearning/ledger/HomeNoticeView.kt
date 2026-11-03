@@ -15,7 +15,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-/** The home broadcast is a real horizontal ticker, including messages shorter than its viewport. */
+/** Short broadcasts stay still; overflowing broadcasts move as complete icon/text items. */
 internal class HomeNoticeView(private val host: MainActivity) : LinearLayout(host), DefaultLifecycleObserver {
     private val ticker = NoticeMarqueeView(host)
     private var collection: Job? = null
@@ -24,7 +24,6 @@ internal class HomeNoticeView(private val host: MainActivity) : LinearLayout(hos
         orientation = HORIZONTAL; gravity = Gravity.CENTER_VERTICAL
         background = host.rounded(0xFFFFF5E2.toInt(), 9)
         setPadding(host.u(8), host.u(10), host.u(8), host.u(10))
-        addView(ReferenceIcon(host, "notice", 0xFFFF9226.toInt()), LayoutParams(host.u(25), host.u(25)).apply { marginEnd = host.u(11) })
         addView(ticker, LayoutParams(0, -1, 1f))
         host.clickable(this, "首页广播，长按管理") {
             com.google.android.material.dialog.MaterialAlertDialogBuilder(host).setTitle("广播提醒")
@@ -55,7 +54,7 @@ internal class HomeNoticeView(private val host: MainActivity) : LinearLayout(hos
     override fun onWindowVisibilityChanged(visibility: Int) { super.onWindowVisibilityChanged(visibility); updateAnimation() }
     private fun updateAnimation() {
         // View construction may invoke this callback before the field initializer has run.
-        if (childCount > 1) ticker.setRunning(isAttachedToWindow && windowVisibility == View.VISIBLE && host.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+        if (childCount > 0) ticker.setRunning(isAttachedToWindow && windowVisibility == View.VISIBLE && host.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
     }
 }
 
@@ -64,66 +63,79 @@ private class NoticeMarqueeView(private val host: MainActivity) : View(host) {
         color = 0xFF9E6A18.toInt()
         textSize = host.resources.displayMetrics.widthPixels * 15f / 400f * host.resources.configuration.fontScale * if (host.care) 1.18f else 1f
     }
+    private val player = NoticePlayback(host.resources.displayMetrics.widthPixels * 32f / 400f)
+    private val iconSize = host.u(25).toFloat()
+    private val textStart = iconSize + host.u(11)
+    private val iconBounds = android.graphics.RectF()
     private var messages = emptyList<String>()
-    private var index = 0
-    private var offset = 0f
     private var running = false
     private var previousFrame = 0L
     private var framePosted = false
-    val currentContent: String get() = messages.getOrNull(index) ?: if (error) "广播暂时无法读取，长按管理" else "暂无广播提醒，长按添加"
     private var error = false
+    val currentContent: String get() = messages.getOrNull(player.index) ?: if (error) "广播暂时无法读取，长按管理" else "暂无广播提醒，长按添加"
     private val frame = object : Runnable {
         override fun run() {
             framePosted = false
-            if (!running || !isAttachedToWindow || windowVisibility != View.VISIBLE || messages.isEmpty()) return
+            if (!running || !isAttachedToWindow || windowVisibility != View.VISIBLE || !player.needsTick) return
             val now = SystemClock.uptimeMillis()
-            if (previousFrame != 0L) {
-                offset += (now - previousFrame).coerceAtMost(80L) * host.resources.displayMetrics.widthPixels * 22f / 400_000f
-                val distance = cycleWidth()
-                if (offset >= distance) { offset -= distance; index = (index + 1) % messages.size; updateDescription() }
-            }
-            previousFrame = now; invalidate(); scheduleFrame()
+            val before = player.index
+            val elapsed = (now - previousFrame).coerceAtLeast(0L)
+            player.tick(if (player.overflowing) elapsed.coerceAtMost(80L) else elapsed)
+            previousFrame = now
+            if (before != player.index) updateDescription()
+            invalidate(); scheduleFrame()
         }
     }
-    init {
-        id = R.id.notice_marquee
-        importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
-        updateDescription()
+    init { id = R.id.notice_marquee; importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES; updateDescription() }
+    private fun configure() {
+        player.configure(messages.map { textStart + paint.measureText(it) }, width.toFloat())
+        previousFrame = SystemClock.uptimeMillis()
+        removeCallbacks(frame); framePosted = false; invalidate(); scheduleFrame()
     }
     fun setMessages(values: List<String>) {
         val normalized = values.map { it.replace(Regex("\\s+"), " ").trim() }
         if (messages != normalized || error) {
-            messages = normalized; index = 0; offset = 0f; previousFrame = 0L; error = false
-            updateDescription(); invalidate()
+            messages = normalized; error = false; player.reset(); configure(); updateDescription()
         }
-        scheduleFrame()
     }
-    fun showError() { messages = emptyList(); index = 0; offset = 0f; error = true; updateDescription(); invalidate() }
+    fun showError() { messages = emptyList(); error = true; configure(); updateDescription() }
     fun setRunning(value: Boolean) {
-        running = value
-        if (!value) { removeCallbacks(frame); framePosted = false; previousFrame = 0L }
+        if (running == value) return
+        running = value; previousFrame = SystemClock.uptimeMillis()
+        if (!value) { removeCallbacks(frame); framePosted = false }
         else scheduleFrame()
     }
     private fun scheduleFrame() {
-        if (running && messages.isNotEmpty() && isAttachedToWindow && !framePosted) { framePosted = true; postOnAnimation(frame) }
+        if (running && player.needsTick && isAttachedToWindow && !framePosted) {
+            framePosted = true
+            if (player.overflowing) postOnAnimation(frame) else postDelayed(frame, player.nextDelayMillis)
+        }
     }
-    private fun cycleWidth() = maxOf(paint.measureText(currentContent), width.toFloat()) + host.u(28)
     private fun updateDescription() { contentDescription = "广播内容：$currentContent" }
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) { super.onSizeChanged(w,h,oldw,oldh); configure(); updateDescription() }
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        val x = if (messages.isEmpty()) 0f else player.x
         val baseline = (height - paint.ascent() - paint.descent()) / 2f
-        canvas.save(); canvas.clipRect(0, 0, width, height)
-        canvas.drawText(currentContent, -offset, baseline, paint)
-        if (messages.isNotEmpty()) canvas.drawText(messages[(index + 1) % messages.size], cycleWidth() - offset, baseline, paint)
-        canvas.restore()
+        val save = canvas.save(); canvas.clipRect(0, 0, width, height)
+        iconBounds.set(x, (height-iconSize)/2f, x+iconSize, (height+iconSize)/2f)
+        ReferenceAssets.draw(context, canvas, "crop_notice.png", iconBounds)
+        canvas.drawText(currentContent, x+textStart, baseline, paint)
+        canvas.restoreToCount(save)
     }
     override fun onInitializeAccessibilityNodeInfo(info: AccessibilityNodeInfo) {
         super.onInitializeAccessibilityNodeInfo(info)
-        info.className = android.widget.TextView::class.java.name
-        info.text = currentContent
-        // Machine-readable verification metadata; it does not become spoken or visible interface text.
-        info.extras.putFloat("cn.taxlearning.notice.offsetPx", offset)
-        info.extras.putBoolean("cn.taxlearning.notice.running", running && messages.isNotEmpty())
+        info.className = android.widget.TextView::class.java.name; info.text = currentContent
+        info.extras.putFloat("cn.taxlearning.notice.offsetPx", -player.x)
+        info.extras.putBoolean("cn.taxlearning.notice.running", running && player.overflowing)
+        info.extras.putInt("cn.taxlearning.notice.index", player.index)
+        info.extras.putString("cn.taxlearning.notice.mode", if (player.overflowing) "scroll" else "static")
+        info.extras.putFloat("cn.taxlearning.notice.iconX", player.x)
+        info.extras.putFloat("cn.taxlearning.notice.textX", player.x+textStart)
+        info.extras.putFloat("cn.taxlearning.notice.itemWidth", player.itemWidth)
+        info.extras.putFloat("cn.taxlearning.notice.viewportWidth", player.viewport)
+        info.extras.putLong("cn.taxlearning.notice.completed", player.completed)
+        info.extras.putFloat("cn.taxlearning.notice.lastExitRight", player.lastExitRight)
     }
     override fun onDetachedFromWindow() { setRunning(false); super.onDetachedFromWindow() }
     override fun onAttachedToWindow() { super.onAttachedToWindow(); scheduleFrame() }

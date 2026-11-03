@@ -1,0 +1,8 @@
+税知账1.3.2手机安装说明
+文件：D:\downLoad\tax-learning-1.3.2-release.apk
+大小：7227764字节（6.89MiB）
+SHA-256：c1ad6a23be2619a31ee4078480c7e725217e73935f28912a76cfc560cd09ce6d
+同包名、同正式签名，直接覆盖安装，保留原数据；不要先卸载或清除数据。旧1.3.1保留。
+下载：https://github.com/qxqian11-ux/tax-learning-app/releases/download/v1.3.2/tax-learning-1.3.2-release.apk
+二维码：D:\PersonalTaxLearningApp\output\v1.3.2\APK下载二维码-1.3.2.png
+真机测试：单条短内容应静止；多条短内容停留3秒后换条；长内容与图标一起左移，完全离开再出现下一条；长按仍可维护广播，关闭重开数据保留。
