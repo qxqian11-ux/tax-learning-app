@@ -1,0 +1,10 @@
+税知账1.3.1安装说明
+手机安装文件：D:\downLoad\tax-learning-1.3.1-release.apk
+项目原件：D:\PersonalTaxLearningApp\output\v1.3.1\tax-learning-1.3.1-release.apk
+大小7226000字节（6.89MiB）
+SHA-256：4bbda79d687ee4ea071a38cf72a10fcb4478779b1890871eb66e0565bba1aafd
+同包名、同正式签名，直接覆盖安装。不要先卸载或清除应用数据；旧版1.3.0保留。
+https://github.com/qxqian11-ux/tax-learning-app/releases/download/v1.3.1/tax-learning-1.3.1-release.apk
+二维码：D:\PersonalTaxLearningApp\output\v1.3.1\APK下载二维码-1.3.1.png，已从图片像素解码核实内容。扫码慢时直接传APK到手机，在文件管理器打开。
+华为HarmonyOS4.2.0请实际核对首页顶部接缝、搜索框、专题角标、斜切按钮边缘、服务卡标签和滚动；然后检查关闭重开数据保留。
+收入JSON备份仍仅含收入，不含任职和广播。

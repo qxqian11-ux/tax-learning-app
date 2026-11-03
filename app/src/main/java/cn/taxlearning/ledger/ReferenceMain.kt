@@ -56,7 +56,7 @@ class MainActivity : Screen() {
         scroll=ScrollView(this).apply { isFillViewport=true;isVerticalScrollBarEnabled=false;clipToPadding=false;addView(body) }
         stage.addView(scroll,FrameLayout.LayoutParams(-1,-1))
         sticky=FrameLayout(this);stage.addView(sticky,FrameLayout.LayoutParams(-1,-2,Gravity.TOP))
-        navigation=row().apply { background=rounded(0xFAFFFFFF.toInt(),40);elevation=u(1).toFloat();setPadding(u(22),u(7),u(22),u(7));clipToOutline=true }
+        navigation=row().apply { background=rounded(0xFAFFFFFF.toInt(),40);elevation=u(3).toFloat();setPadding(u(22),u(7),u(22),u(7));clipToOutline=true }
         stage.addView(navigation,FrameLayout.LayoutParams(-1,u(64),Gravity.BOTTOM).apply { setMargins(u(17),0,u(17),u(20)) })
         root.addView(stage,LinearLayout.LayoutParams(-1,0,1f))
         ViewCompat.setOnApplyWindowInsetsListener(root){view,insets ->
@@ -74,7 +74,7 @@ class MainActivity : Screen() {
     override fun onSaveInstanceState(out: Bundle) { positions[tab]=scroll.scrollY;out.putInt("homeCardScroll",homeCardScroll);out.putInt("homeFeedTab",homeFeedTab);out.putInt("tab",tab);out.putIntArray("positions",positions);super.onSaveInstanceState(out) }
     internal fun select(index: Int) { if(index==tab)return;positions[tab]=scroll.scrollY;tab=index;render() }
     private fun renderNavigation() {
-        navigation.background=if(tab==0)gradient(0xFFE7F8FC.toInt(),0xFFFFF4E8.toInt(),40) else rounded(0xF9FFFFFF.toInt(),40)
+        navigation.background=(if(tab==0)gradient(0xFFE7F8FC.toInt(),0xFFFFF4E8.toInt(),40) else rounded(0xF9FFFFFF.toInt(),40)).apply {setStroke(1,0xEBFFFFFF.toInt())}
         navigation.removeAllViews()
         listOf("首页","待办","办&查","消息","我的").forEachIndexed { index, title ->
             val active=index==tab
@@ -88,7 +88,7 @@ class MainActivity : Screen() {
         employmentBadge=null
         body.removeAllViews();body.setPadding(0,0,0,u(106)+bottomInset);renderNavigation()
         sticky.removeAllViews();scroll.setPadding(0,0,0,0);body.background=rounded(BG,0)
-        if(tab==0){sticky.addView(buildSearchBar());scroll.setPadding(0,u(46),0,0);body.background=PageTopBackground(u(148))}
+        if(tab==0){sticky.addView(buildSearchBar(),FrameLayout.LayoutParams(-1,u(46)));scroll.setPadding(0,u(46),0,0);body.background=HomeHeaderDrawable(this,46)}
         if(tab==2){val top=row().apply { background=gradient(0xFF287CF5.toInt(),0xFF72A6F9.toInt(),0);setPadding(u(13),u(28),u(13),u(16)) };top.addView(type("办&查",24f,Color.WHITE,true));top.addView(type("请选择您需要办理或查询的事项",12f,0xFFBFE0FF.toInt()),LinearLayout.LayoutParams(0,-2,1f).apply { marginStart=u(12) });sticky.addView(top,FrameLayout.LayoutParams(-1,u(if(largeText)105 else 71)));scroll.setPadding(0,u(if(largeText)105 else 71),0,0)}
         if(tab==2)body.background=PageTopBackground(u(26))
         when(tab) { 0 -> renderHome();1 -> renderTodo();2 -> renderServices();3 -> renderMessages();else -> renderProfile() }

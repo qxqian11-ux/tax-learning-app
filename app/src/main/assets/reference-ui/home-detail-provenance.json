@@ -1,0 +1,20 @@
+{
+  "note": "Original packaged PNG bytes retained. No full screenshot or personal information included; source APK/version listed in provenance.json.",
+  "assets": [
+    {
+      "file": "home_header_surface.png",
+      "originalApkEntry": "assets/www/static/images/pending-tasks-bg.2c8c9fc.png",
+      "sha256": "5bfd2e26a0a331318c3cdc29c6d2603784b9f1b1aa328298b3829276c13573cf"
+    },
+    {
+      "file": "home_topic_tab.png",
+      "originalApkEntry": "assets/www/static/images/home_zty_entrance_2023.dde72d8.png",
+      "sha256": "c45960f2e82f69fee84375c6c2a53df55d9708ba39899f73d23bb19066d4b050"
+    },
+    {
+      "file": "home_deduction_surface.png",
+      "originalApkEntry": "assets/www/static/images/important-has-bg.8b86986.png",
+      "sha256": "98890b5b4a2f27791f852a03c04a1f9e63e24252b6ac5553eaa5073a47782193"
+    }
+  ]
+}

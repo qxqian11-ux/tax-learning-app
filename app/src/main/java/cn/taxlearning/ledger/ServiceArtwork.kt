@@ -23,12 +23,17 @@ internal class ServiceArtwork(context: Context, private val kind: String) : View
         }
         if(kind=="hero") {
             val w=width.toFloat();val h=height.toFloat()
-            p.color=0x1672B9F5
-            c.save();c.translate(w*.06f,h*.43f);c.rotate(-10f)
-            c.drawRoundRect(0f,0f,w*.32f,h*.72f,w*.04f,w*.04f,p)
-            p.color=0x1572B9F5
-            for(x in 0..2)for(y in 0..3)c.drawRoundRect(w*(.04f+x*.085f),h*(.06f+y*.13f),w*(.10f+x*.085f),h*(.15f+y*.13f),w*.012f,w*.012f,p)
-            c.restore()
+            c.save();c.translate(w*.015f,h*.39f);c.rotate(-9f)
+            val glass=RectF(0f,0f,w*.36f,h*.8f)
+            p.color=0x0E6BAAF6;p.style=Paint.Style.FILL;c.drawRoundRect(glass,w*.035f,w*.035f,p)
+            p.shader=LinearGradient(0f,0f,w*.36f,h*.75f,intArrayOf(0x55B99DEB,0x6679D6F4,0x559AE2F4,0x44B0C5F4),null,Shader.TileMode.CLAMP)
+            p.style=Paint.Style.STROKE;p.strokeWidth=w*.005f;c.drawRoundRect(glass,w*.035f,w*.035f,p)
+            p.shader=null;p.color=0x223D7AB8;p.strokeWidth=w*.0014f
+            c.drawRoundRect(RectF(w*.024f,h*.035f,w*.337f,h*.755f),w*.027f,w*.027f,p)
+            p.style=Paint.Style.FILL;p.color=0x0D82B4E8;c.drawRoundRect(w*.055f,h*.105f,w*.295f,h*.22f,w*.016f,w*.016f,p)
+            p.color=0x125C91C9;p.textAlign=Paint.Align.CENTER;p.textSize=w*.038f
+            for(x in 0..2)for(y in 0..3)c.drawText(listOf("7","8","9","4","5","6","1","2","3","0",".","=")[y*3+x],w*(.09f+x*.095f),h*(.36f+y*.125f),p)
+            p.textAlign=Paint.Align.LEFT;c.restore()
             val target=RectF(w*(1f-476f/1136f),h*(1f-300f/632f),w,h)
             val layer=c.saveLayer(target,null)
             ReferenceAssets.draw(context,c,"hero_decoration.png",target)

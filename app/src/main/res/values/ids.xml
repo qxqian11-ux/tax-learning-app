@@ -26,4 +26,15 @@
 <item name="notice_add" type="id"/>
 <item name="notice_content" type="id"/>
 <item name="notice_save" type="id"/>
+<item name="home_search_bar" type="id"/>
+<item name="home_search_field" type="id"/>
+<item name="home_search_scan" type="id"/>
+<item name="home_hero" type="id"/>
+<item name="home_hero_topic" type="id"/>
+<item name="home_hero_record" type="id"/>
+<item name="home_deduction" type="id"/>
+<item name="home_deduction_fill" type="id"/>
+<item name="home_deduction_lookup" type="id"/>
+<item name="home_shortcuts" type="id"/>
+<item name="home_news_tabs" type="id"/>
 </resources>
