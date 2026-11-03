@@ -1,0 +1,8 @@
+税知账1.4.0安装说明
+D:\downLoad\tax-learning-1.4.0-release.apk
+7384279字节，7.04MiB。
+SHA-256：285b2ad6dabe64e128b0bfc1670db24a9c5a5245f4b16dff09b59614152bf38e
+同正式签名直接覆盖安装，不先卸载或清数据。新详情使用数据库无损升级，旧包与源码保留。含新字段的JSON版本2备份需在1.4.0或更高版本恢复。
+下载：https://github.com/qxqian11-ux/tax-learning-app/releases/download/v1.4.0/tax-learning-1.4.0-release.apk
+二维码：D:\PersonalTaxLearningApp\output\v1.4.0\APK下载二维码-1.4.0.png
+请按本轮1至6项在华为真机对照测试：顶部拉动、斜边按钮、五标签、固定合计、右侧数据点击/展开收起/重启保留、个人中心色彩与图标。

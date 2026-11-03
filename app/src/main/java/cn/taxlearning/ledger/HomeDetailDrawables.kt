@@ -12,12 +12,12 @@ internal class HomeRibbonLabel(host:MainActivity,label:String,private val blue:B
     private val inset=host.u(3).toFloat()
     init {
         text=label;setTextSize(TypedValue.COMPLEX_UNIT_PX,host.type(label,14f).textSize)
-        setTextColor(Color.WHITE);includeFontPadding=false;setLineSpacing(host.u(-1).toFloat(),1f)
+        setTextColor(Color.WHITE);setTypeface(typeface,Typeface.BOLD);includeFontPadding=false;setLineSpacing(host.u(-1).toFloat(),1f)
     }
     override fun onTouchEvent(event:MotionEvent):Boolean {
         if(!blue && event.actionMasked==MotionEvent.ACTION_DOWN) {
             val h=height-inset*2;val y=(event.y-inset).coerceIn(0f,h)
-            if(event.x-inset<h*.446f*(1f-y/h))return false
+            if(event.x-inset<h*.5f*(1f-y/h))return false
         }
         return super.onTouchEvent(event)
     }
@@ -61,14 +61,14 @@ internal class HomeRibbonDrawable(private val blue:Boolean,private val padding:F
     private val paint=Paint(Paint.ANTI_ALIAS_FLAG)
     override fun draw(c:Canvas) {
         val save=c.save();c.translate(padding,padding)
-        val w=bounds.width()-padding*2;val h=bounds.height()-padding*2;val radius=h/2;val slope=h*.446f;val join=h*.055f
+        val w=bounds.width()-padding*2;val h=bounds.height()-padding*2;val radius=h/2;val slope=h*.5f;val join=h*.055f
         paint.color=Color.WHITE
         paint.shader=LinearGradient(0f,0f,0f,h,if(blue)intArrayOf(0xFF25AAFC.toInt(),0xFF008CF4.toInt())else intArrayOf(0xFFFFD347.toInt(),0xFFFFAF00.toInt()),null,Shader.TileMode.CLAMP)
         paint.setShadowLayer(padding,0f,padding*.5f,if(blue)0x550098F4 else 0x55FFB500)
         val path=Path()
         if(blue) {
             path.moveTo(radius,0f);path.lineTo(w-join,0f);path.quadTo(w,0f,w-join*.3f,join)
-            path.lineTo(w-slope+join,h-join);path.quadTo(w-slope,h,w-slope-join,h);path.lineTo(radius,h)
+            path.lineTo(w-slope+join,h-h*.18f);path.quadTo(w-slope,h,w-slope-h*.19f,h);path.lineTo(radius,h)
             path.arcTo(RectF(0f,0f,h,h),90f,180f);path.close()
         } else {
             path.moveTo(slope+join,0f);path.lineTo(w-radius,0f);path.arcTo(RectF(w-h,0f,w,h),270f,180f)

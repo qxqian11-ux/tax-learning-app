@@ -37,4 +37,13 @@
 <item name="home_deduction_lookup" type="id"/>
 <item name="home_shortcuts" type="id"/>
 <item name="home_news_tabs" type="id"/>
+    <item name="main_page_scroll" type="id"/>
+    <item name="income_fixed_summary" type="id"/>
+    <item name="detail_edit_input" type="id"/>
+    <item name="detail_special_toggle" type="id"/>
+    <item name="detail_special_components" type="id"/>
+    <item name="profile_identity_card" type="id"/>
+    <item name="profile_family_icon" type="id"/>
+    <item name="profile_employment_icon" type="id"/>
+    <item name="profile_bank_icon" type="id"/>
 </resources>

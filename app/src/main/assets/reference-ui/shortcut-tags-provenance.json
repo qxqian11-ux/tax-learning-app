@@ -1,0 +1,57 @@
+[
+  {
+    "file": "shortcut_tag_declare.png",
+    "source": "User reference image4",
+    "cropPixels": [
+      185,
+      1903,
+      367,
+      1976
+    ],
+    "sha256": "10195cc4554ebdd31e24c64959aaa4a5f4f6508afb15f794a27f5b876ab8b765"
+  },
+  {
+    "file": "shortcut_tag_query.png",
+    "source": "User reference image4",
+    "cropPixels": [
+      535,
+      1903,
+      717,
+      1976
+    ],
+    "sha256": "6300cb67f3ac1e8b25d6aa0a10cc4dec42d3e9cf6d6105516e47958f91b7177c"
+  },
+  {
+    "file": "shortcut_tag_issue.png",
+    "source": "User reference image4",
+    "cropPixels": [
+      887,
+      1903,
+      1069,
+      1976
+    ],
+    "sha256": "bc122c7f0c5b75492f88e14a94fe75d471396723086dca48b95ca92f8a451b9c"
+  },
+  {
+    "file": "shortcut_tag_fill.png",
+    "source": "User reference image5",
+    "cropPixels": [
+      651,
+      1857,
+      833,
+      1930
+    ],
+    "sha256": "c6999ea0af1d5bd763dab98d186845e7a180e386ce2d2eac1e0c40184efe21f1"
+  },
+  {
+    "file": "shortcut_tag_use.png",
+    "source": "User reference image5",
+    "cropPixels": [
+      1002,
+      1857,
+      1184,
+      1930
+    ],
+    "sha256": "61ea76e31d60662f63ea4974babf153ae237eaa91d76e4b11f667abd0538a7c8"
+  }
+]

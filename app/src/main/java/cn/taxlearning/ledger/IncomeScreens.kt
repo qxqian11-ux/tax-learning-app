@@ -117,8 +117,9 @@ class IncomeListActivity : Screen() {
     override fun onCreate(state: Bundle?) {
         super.onCreate(state);year=intent.getIntExtra("year",Rules.currentYear());page=state?.getInt("page")?:0
         allowed=intent.getStringArrayListExtra("categories")?:Rules.categories
-        setup("收入纳税明细",edgeToEdge=true);topAction("批量申诉") { info("批量申诉") };referenceGap(body,12)
-        summary=column();body.addView(summary)
+        setup("收入纳税明细",edgeToEdge=true);topAction("批量申诉") { info("批量申诉") }
+        val pinned=column();referenceGap(pinned,12)
+        summary=column().apply {id=R.id.income_fixed_summary};pinned.addView(summary);root.addView(pinned,2)
         (titleBar.getChildAt(0) as TextView).apply {id=R.id.income_title_add;contentDescription="收入纳税明细，点击新增";setOnClickListener {go(EditActivity::class.java,year)}}
         records=column();body.addView(records)
         work { repo.observe(year).collect { rows=it;renderSummary();renderRows() } }
@@ -154,7 +155,7 @@ class IncomeListActivity : Screen() {
             title.addView(referenceText("${record.year}-${record.month.toString().padStart(2,'0')}",18f).apply {gravity=Gravity.END},LinearLayout.LayoutParams(-2,ru(24)).apply {marginEnd=ru(34)})
             line.addView(title);referenceGap(line,6)
             val details=row();val copy=column()
-            listOf("所得项目小类：${if(record.category=="工资薪金")"正常工资薪金" else record.category}","扣缴义务人：${record.payer}","收入：${Rules.decimal(record.incomeCents)}元","已申报税额：${Rules.decimal(record.declaredCents)}元").forEachIndexed { index,label ->
+            listOf("所得项目小类：${IncomeDetails.value(record,"subcategory",if(record.category=="工资薪金")"正常工资薪金" else record.category)}","扣缴义务人：${record.payer}","收入：${Rules.decimal(record.incomeCents)}元","已申报税额：${Rules.decimal(record.declaredCents)}元").forEachIndexed { index,label ->
                 copy.addView(referenceText(label,16f,0xFFA3A3A3.toInt()).apply { minimumHeight=ru(22);isSingleLine=true;ellipsize=android.text.TextUtils.TruncateAt.END },LinearLayout.LayoutParams(-1,-2).apply {if(index>0)topMargin=ru(6)})
             }
             details.addView(copy,LinearLayout.LayoutParams(0,-2,1f));details.addView(ChevronView(this,0xFFD1D1D1.toInt()),LinearLayout.LayoutParams(ru(12),ru(20)))
@@ -166,25 +167,6 @@ class IncomeListActivity : Screen() {
         if(pages>1){records.addView(text("第 ${page+1} / $pages 页 · 每页 50 笔",13f,MUTED));if(page>0)button("上一页",records,true){page--;renderRows()};if(page<pages-1)button("下一页",records,true){page++;renderRows()}}
     }
     override fun onSaveInstanceState(out: Bundle) { out.putInt("page",page);super.onSaveInstanceState(out) }
-}
-
-class DetailActivity : Screen() {
-    override fun onCreate(state: Bundle?) {super.onCreate(state);setup("收入纳税明细详情",edgeToEdge=true);topAction("申诉") { info("异议申诉") }}
-    override fun onResume() {super.onResume();work {
-        val record=repo.get(intent.getStringExtra("id")?:"")
-        if(record==null){toast("这条明细已不存在");finish();return@work}
-        body.removeAllViews();referenceGap(body,12);sectionHeader("纳税明细信息")
-        valueRow(body,"收入：","${Rules.decimal(record.incomeCents)}元");valueRow(body,"已申报税额：","${Rules.decimal(record.declaredCents)}元")
-        val calculation=referenceText("查看税款计算 ›",16f,ACCENT).apply { gravity=Gravity.END;setBackgroundColor(Color.WHITE);minimumHeight=ru(50);gravity=Gravity.END or Gravity.CENTER_VERTICAL;setPadding(ru(17),ru(8),ru(17),ru(8));setOnClickListener { MaterialAlertDialogBuilder(this@DetailActivity).setTitle("模拟税款记录").setMessage("本条收入 ${Rules.decimal(record.incomeCents)} 元，已申报税额 ${Rules.decimal(record.declaredCents)} 元，已缴税额 ${Rules.decimal(record.paidCents)} 元。\n\n以上金额由你手动录入，本应用不计算真实应纳税额。未维护的扣除项目不生成虚构金额。").setPositiveButton("知道了",null).show() } };body.addView(calculation)
-        referenceGap(body,12);sectionHeader("纳税明细-基础情况")
-        listOf("所得项目小类：" to if(record.category=="工资薪金")"正常工资薪金" else record.category,"扣缴义务人名称：" to record.payer,"扣缴义务人纳税人识别号：" to "未维护（模拟）","主管税务机构：" to "未维护（模拟）","申报渠道：" to "手工录入（学习版）","收入日期：" to record.date,"税款所属期：" to "${record.year}-${record.month.toString().padStart(2,'0')}").forEach { valueRow(body,it.first,it.second,minHeight=when(it.first){"扣缴义务人名称：","扣缴义务人纳税人识别号：","主管税务机构：" -> 58;"税款所属期：" -> 46;else -> 36}) }
-        referenceGap(body,12);body.addView(referenceText("温馨提示：本页面展示您在本机录入的模拟收入和税额。尚未维护的扣除项目以“—”显示，原有数据可在页面下方修改。",14f,INK).apply { minimumHeight=ru(80);setBackgroundColor(0xFFEAF4FF.toInt());setPadding(ru(17),ru(12),ru(17),ru(12)) })
-        referenceGap(body,12);sectionHeader("本期收入与扣除详情")
-        valueRow(body,"本期收入：","${Rules.decimal(record.incomeCents)}元")
-        listOf("本期免税收入：","本期减除费用：","本期专项扣除：","本期其他扣除：","本期准予扣除的捐赠项目：").forEach { valueRow(body,it,"—") }
-        referenceGap(body,12);sectionHeader("本机记录补充");valueRow(body,"收入来源：",record.source);valueRow(body,"已缴税额：","${Rules.decimal(record.paidCents)}元");valueRow(body,"备注：",record.note.ifBlank { "无" })
-        val actions=column().apply { setPadding(ru(17),ru(5),ru(17),ru(20)) };button("修改明细",actions){go(EditActivity::class.java,id=record.id)};button("删除明细",actions,true){confirmDelete(record){finish()}};body.addView(actions)
-    }}
 }
 
 private class CircleCheckDrawable(private val density: Float) : Drawable() {

@@ -39,7 +39,7 @@ object Rules {
         require(listOf(r.incomeCents, r.declaredCents, r.paidCents).all { it in 0..MAX_CENTS }) { "金额超出范围" }
         require(dateValid(r.date)) { "请选择有效的收入日期" }
         require(r.date.substring(0,4).toInt() == r.year) { "收入日期的年份须与纳税年度一致" }
-        require(r.note.length <= 500) { "备注最多 500 字" }
+        require(r.note.length <= 500) { "备注最多 500 字" }; IncomeDetails.validate(r.detailJson)
     }
 }
 
@@ -47,7 +47,8 @@ object Rules {
 data class Income(
     @PrimaryKey val id: String = UUID.randomUUID().toString(),
     val year: Int, val month: Int, val category: String, val source: String, val payer: String,
-    val incomeCents: Long, val declaredCents: Long, val paidCents: Long, val date: String, val note: String = ""
+    val incomeCents: Long, val declaredCents: Long, val paidCents: Long, val date: String, val note: String = "",
+    @ColumnInfo(defaultValue = "'{}'") val detailJson: String = "{}"
 )
 @Entity(tableName = "metadata")
 data class Metadata(@PrimaryKey val key: String, val value: String)
@@ -63,8 +64,16 @@ interface IncomeDao {
     @Query("SELECT * FROM metadata WHERE `key` = :key") fun metadata(key: String): Metadata?
     @Insert fun mark(m: Metadata)
 }
-@Database(entities = [Income::class, Metadata::class], version = 1, exportSchema = true)
+@Database(entities = [Income::class, Metadata::class], version = 2, exportSchema = true)
 abstract class LedgerDatabase : RoomDatabase() { abstract fun incomes(): IncomeDao }
 
 data class Totals(val income: Long, val declared: Long, val paid: Long)
 fun List<Income>.totals() = Totals(sumOf { it.incomeCents }, sumOf { it.declaredCents }, sumOf { it.paidCents })
+
+object LedgerMigrations {
+    val V1_TO_V2=object:androidx.room.migration.Migration(1,2) {
+        override fun migrate(db:androidx.sqlite.db.SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE incomes ADD COLUMN detailJson TEXT NOT NULL DEFAULT '{}' ")
+        }
+    }
+}

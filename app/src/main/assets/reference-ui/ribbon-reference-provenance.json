@@ -1,0 +1,24 @@
+[
+  {
+    "file": "ribbon_reference_fill.png",
+    "source": "User image4",
+    "cropPixels": [
+      158,
+      1252,
+      578,
+      1411
+    ],
+    "sha256": "9e4bdda0ba34b14cadb0e610cf72ee0c203fe66fbaba502de1513d295138e7dd"
+  },
+  {
+    "file": "ribbon_reference_query.png",
+    "source": "User image4",
+    "cropPixels": [
+      511,
+      1252,
+      1058,
+      1411
+    ],
+    "sha256": "e282d794fdbd1460dd7d09cf5fa2a790c8ffadb9cb11db4b3714014bd0274164"
+  }
+]

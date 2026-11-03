@@ -12,7 +12,7 @@ class TaxApp : Application() {
     override fun onCreate() { super.onCreate(); repository }
 }
 class Repository(app: Application, databaseName: String = "learning-ledger.db") {
-    val db = Room.databaseBuilder(app, LedgerDatabase::class.java, databaseName).build()
+    val db = Room.databaseBuilder(app, LedgerDatabase::class.java, databaseName).addMigrations(LedgerMigrations.V1_TO_V2).build()
     private val dao = db.incomes()
     private val ready = CompletableDeferred<Unit>()
     init {

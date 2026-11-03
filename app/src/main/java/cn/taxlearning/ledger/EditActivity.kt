@@ -16,6 +16,7 @@ import java.util.UUID
 class EditActivity : Screen() {
     private var rowId=UUID.randomUUID().toString()
     private var editing=false
+    private var detailJson="{}"
     private var year=Rules.currentYear(); private var month=1; private var category=Rules.categories.first()
     private var date=""
     private val fields=linkedMapOf<String,TextInputEditText>()
@@ -38,7 +39,7 @@ class EditActivity : Screen() {
         })
         work {
             val r=if(editing) repo.get(rowId) else null
-            if(editing && r==null) { toast("明细已不存在"); finish(); return@work }
+            if(editing && r==null) { toast("明细已不存在"); finish(); return@work };detailJson=r?.detailJson?:"{}"
             year=state?.getInt("year")?:r?.year?:intent.getIntExtra("year",Rules.currentYear())
             month=state?.getInt("month")?:r?.month?:(Calendar.getInstance().get(Calendar.MONTH)+1)
             category=state?.getString("category")?:r?.category?:category
@@ -104,7 +105,7 @@ class EditActivity : Screen() {
             listOf("source" to "请填写收入来源","payer" to "请填写扣缴义务人").forEach { (k,hint) ->
                 if(value(k).isBlank()) { layouts[k]?.error=hint; fields[k]?.requestFocus(); throw IllegalArgumentException(hint) }
             }
-            val r=Income(rowId,year,month,category,value("source"),value("payer"),amount("income","收入金额"),amount("declared","已申报税额"),amount("paid","已缴税额"),date,value("note"))
+            val r=Income(rowId,year,month,category,value("source"),value("payer"),amount("income","收入金额"),amount("declared","已申报税额"),amount("paid","已缴税额"),date,value("note"),detailJson)
             Rules.validate(r); saving=true
             work {
                 try { repo.save(r,editing); toast("保存成功"); finish() } finally { saving=false }

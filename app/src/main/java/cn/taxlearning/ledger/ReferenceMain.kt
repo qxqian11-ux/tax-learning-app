@@ -53,7 +53,7 @@ class MainActivity : Screen() {
         root=column().apply { setBackgroundColor(BG) };setContentView(root)
         val stage=FrameLayout(this)
         body=column()
-        scroll=ScrollView(this).apply { isFillViewport=true;isVerticalScrollBarEnabled=false;clipToPadding=false;addView(body) }
+        scroll=ClampedPageScrollView(this).apply { id=R.id.main_page_scroll;isFillViewport=true;isVerticalScrollBarEnabled=false;clipToPadding=false;addView(body) }
         stage.addView(scroll,FrameLayout.LayoutParams(-1,-1))
         sticky=FrameLayout(this);stage.addView(sticky,FrameLayout.LayoutParams(-1,-2,Gravity.TOP))
         navigation=row().apply { background=rounded(0xFAFFFFFF.toInt(),40);elevation=u(3).toFloat();setPadding(u(22),u(7),u(22),u(7));clipToOutline=true }
@@ -106,12 +106,12 @@ class MainActivity : Screen() {
         val avatar=ProfileAvatar(this).apply { contentDescription="学习版模拟用户头像" }
         header.addView(avatar,FrameLayout.LayoutParams(u(120),u(120),Gravity.TOP or Gravity.CENTER_HORIZONTAL).apply { topMargin=u(55) })
         clickable(avatar,null) { if(active)info("个人信息") else showDemoLogin() }
-        val identity=FrameLayout(this).apply { background=gradient(0xFFFFEBD6.toInt(),0xFFEFCAA1.toInt(),14) }
+        val identity=FrameLayout(this).apply { id=R.id.profile_identity_card;background=gradient(0xFFFEE9D6.toInt(),0xFFEEC296.toInt(),14) }
         val identityTexts=column().apply { setPadding(u(26),u(23),u(16),0) }
         identityTexts.addView(type(if(active)"学习同学" else "未登录",14f,INK,true))
         val number=row().apply { setPadding(0,u(9),0,0) }
-        number.addView(type(if(active)"纳税人识别号  ${if(revealIdentity)"DEMO-LEARNING-2026" else "D***************6"}" else "使用模拟身份体验学习功能",13f,0xFFCD954F.toInt()))
-        if(active)number.addView(ReferenceIcon(this,"eye",0xFFCF974B.toInt(),revealIdentity).apply { id=R.id.profile_identity_toggle;contentDescription=if(revealIdentity)"隐藏模拟识别号" else "显示模拟识别号";setOnClickListener { revealIdentity=!revealIdentity;render() } },LinearLayout.LayoutParams(u(22),u(20)).apply { marginStart=u(9) })
+        number.addView(type(if(active)"纳税人识别号  ${if(revealIdentity)"DEMO-LEARNING-2026" else "D***************6"}" else "使用模拟身份体验学习功能",13f,0xFFC17B38.toInt()))
+        if(active)number.addView(ReferenceIcon(this,"eye",0xFFC17B38.toInt(),revealIdentity).apply { id=R.id.profile_identity_toggle;contentDescription=if(revealIdentity)"隐藏模拟识别号" else "显示模拟识别号";setOnClickListener { revealIdentity=!revealIdentity;render() } },LinearLayout.LayoutParams(u(22),u(20)).apply { marginStart=u(9) })
         identityTexts.addView(number);identity.addView(identityTexts,FrameLayout.LayoutParams(-1,-1))
         val personal=type(if(active)"个人信息 ›" else "登录 / 注册 ›",13f,Color.WHITE).apply { background=gradient(0xFFEAA251.toInt(),0xFFD89241.toInt(),18);setPadding(u(12),u(5),u(9),u(5));id=R.id.profile_personal }
         identity.addView(personal,FrameLayout.LayoutParams(-2,-2,Gravity.TOP or Gravity.END).apply { topMargin=u(22) })
@@ -121,7 +121,8 @@ class MainActivity : Screen() {
         val shortcuts=row().apply { background=rounded(BG,25);setPadding(u(12),u(12),u(12),0) }
         listOf(Triple("家庭成员","4人","family"),Triple("任职受雇",employmentCount?.let { "${it}家" }?:"…","job"),Triple("银行卡","1张","bank")).forEachIndexed { i, item ->
             val tile=column().apply { gravity=Gravity.CENTER;background=rounded(Color.WHITE,12);id=listOf(R.id.profile_family,R.id.profile_employment,R.id.profile_bank)[i] }
-            tile.addView(ReferenceIcon(this,item.third,listOf(0xFFFF8965.toInt(),0xFFFFC052.toInt(),0xFF08D6BB.toInt())[i]),LinearLayout.LayoutParams(u(50),u(50)))
+            val iconSlot=FrameLayout(this);val iconSize=if(i==2)50 else 42
+            iconSlot.addView(ReferenceIcon(this,item.third,listOf(0xFFFF8965.toInt(),0xFFFFC052.toInt(),0xFF08D6BB.toInt())[i]).apply {id=listOf(R.id.profile_family_icon,R.id.profile_employment_icon,R.id.profile_bank_icon)[i]},FrameLayout.LayoutParams(u(iconSize),u(iconSize),Gravity.TOP or Gravity.CENTER_HORIZONTAL));tile.addView(iconSlot,LinearLayout.LayoutParams(u(50),u(50)))
             tile.addView(type(item.first,15f,INK,true),LinearLayout.LayoutParams(-2,-2).apply { topMargin=u(1) })
             tile.addView(type(if(active)item.second else "—",12f,Color.WHITE).apply { if(i==1) { employmentBadge=this;id=R.id.profile_employment_count }; background=rounded(0xFF458DF8.toInt(),12);setPadding(u(9),u(2),u(9),u(2));gravity=Gravity.CENTER },LinearLayout.LayoutParams(-2,-2).apply { topMargin=u(12) })
             clickable(tile,null) { if(active)info(listOf("家庭成员信息","任职受雇信息","银行卡信息")[i]) else showDemoLogin() }

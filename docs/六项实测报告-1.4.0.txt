@@ -1,0 +1,22 @@
+税知账1.4.0：六项最终验收
+包名cn.taxlearning.ledger；1.4.0/code8；大小7384279字节。
+SHA-256：285b2ad6dabe64e128b0bfc1670db24a9c5a5245f4b16dff09b59614152bf38e
+正式签名证书3ed3b8afba8e782aa439bbe99b3ca3f5ae41e1d3c14da479c805455364613d18；与前版相同，v2验证通过。最低API24，目标SDK34；无新增敏感权限。
+正式包环境：Android11/API30，1216×2688。安装后读取设备base.apk，哈希等于上述最终包。
+
+严格按1→6执行的真实UI测试：
+1. 注入按下、逐步下拉、保持手指未松开事件，截图并核对专题卡边界；保持与松开后位置均不变。
+2. 两个斜边按钮实际点击分别进入填报/查询；保存形状截图。
+3. 横向滑动前后截图保存，覆盖五种标签；裁片来源和SHA见shortcut-tags-provenance.json。
+4. 实际新增一条自身收入，滑动多条列表，合计区域前后屏幕边界完全一致。
+5. 无修改/删除按钮。实际修改收入1500.35、申报税额15.10、识别号/机构/渠道/日期、免税/减除费用；展开四项扣除填写1670.96/417.74/83.55/2553.00，合计4725.25。收起后四行隐藏，完全关闭重开仍保留。实际导出的JSON包含这些字段。
+6. 我的页面截图及控件尺寸核对为42/42/50单位，对应家庭/任职/银行卡；颜色与原参考取样比较。
+测试后只删除自身新增记录。原6条收入UUID和字段前后完全一致，任职家数/列表和原广播内容一致。
+
+14项JVM测试通过；5项设备集成测试通过，包括真实构造旧版数据库后迁移、旧记录/seed标记保留、新详情关闭重开保存、JSON往返与恢复去重。Lint错误0，警告48。
+证据目录：D:\PersonalTaxLearningApp\output\v1.4.0\evidence\ui140-six-20261103-233447
+包含按顺序编号PNG/XML、steps.log、instrumentation.log、income-before/scenario/final.json。证据ZIP包含JVM测试XML、Android日志、构建/Lint与签名报告。数据库测试使用独立Debug包，正式UI测试单独核对APK哈希，未混称。
+较早中断的验收批次与未发布候选仍保留，最终结果以six-audit-result.json指向的批次及上述SHA为准。
+原始手机系统状态栏/字体存在设备差异；华为HarmonyOS4.2.0真机尚待用户测试。本轮没有把截图内真实身份与公司税号写入示例数据。
+二维码实际内容：https://github.com/qxqian11-ux/tax-learning-app/releases/download/v1.4.0/tax-learning-1.4.0-release.apk
+GitHub HTTP下载和完整哈希另见download-verification.json。

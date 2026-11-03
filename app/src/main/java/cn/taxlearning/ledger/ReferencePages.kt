@@ -36,8 +36,8 @@ internal fun MainActivity.buildReferenceHome() {
     val filled=type("模拟填报 3 项专项附加扣除",17f,INK,true).apply {gravity=Gravity.CENTER;text=android.text.SpannableString(text).apply {setSpan(android.text.style.RelativeSizeSpan(1.6f),5,6,0);setSpan(android.text.style.ForegroundColorSpan(0xFFFFB54F.toInt()),5,6,0)}}
     deduction.addView(filled,FrameLayout.LayoutParams(-1,u(if(largeText)64 else 34)).apply {topMargin=u(63)})
     val actions=FrameLayout(this).apply {clipChildren=false;clipToPadding=false}
-    val fill=HomeRibbonLabel(this,"填报",true).apply {id=R.id.home_deduction_fill;gravity=Gravity.CENTER;setLayerType(View.LAYER_TYPE_SOFTWARE,null);background=HomeRibbonDrawable(true,u(3).toFloat())}
-    val lookup=HomeRibbonLabel(this,"我要查询",false).apply {id=R.id.home_deduction_lookup;gravity=Gravity.CENTER;setLayerType(View.LAYER_TYPE_SOFTWARE,null);background=HomeRibbonDrawable(false,u(3).toFloat());setPadding(u(9),0,0,0)}
+    val fill=HomeRibbonLabel(this,"填报",true).apply {id=R.id.home_deduction_fill;gravity=Gravity.CENTER;setLayerType(View.LAYER_TYPE_SOFTWARE,null);background=if(largeText)HomeRibbonDrawable(true,u(3).toFloat()) else HomeBitmapDrawable(this@buildReferenceHome,"ribbon_reference_fill.png");if(!largeText)setTextColor(Color.TRANSPARENT)}
+    val lookup=HomeRibbonLabel(this,"我要查询",false).apply {id=R.id.home_deduction_lookup;gravity=Gravity.CENTER;setLayerType(View.LAYER_TYPE_SOFTWARE,null);background=if(largeText)HomeRibbonDrawable(false,u(3).toFloat()) else HomeBitmapDrawable(this@buildReferenceHome,"ribbon_reference_query.png");if(!largeText)setTextColor(Color.TRANSPARENT);setPadding(u(9),0,0,0)}
     actions.addView(fill,FrameLayout.LayoutParams(u(138),-1));actions.addView(lookup,FrameLayout.LayoutParams(u(180),-1,Gravity.END))
     clickable(fill,null){info("专项附加扣除填报")};clickable(lookup,null){info("专项附加扣除查询")}
     deduction.addView(actions,FrameLayout.LayoutParams(-1,u(52),Gravity.BOTTOM).apply {leftMargin=u(39);rightMargin=u(39);bottomMargin=u(15)})
@@ -54,6 +54,7 @@ internal fun MainActivity.buildReferenceHome() {
         val tagColors=listOf(0xFF5CA5E8.toInt(),0xFFA47CDD.toInt(),0xFF47C7B4.toInt(),0xFFE7A330.toInt(),0xFF5CA5E8.toInt())
         val tagFills=listOf(0xFFB8DDF9.toInt(),0xFFE4D7FB.toInt(),0xFFA7F0E7.toInt(),0xFFFFE9C0.toInt(),0xFFB8DDF9.toInt())
         val tag=type(listOf("去申报","去查询","去开具","去填报","去使用")[index],13f,tagColors[index],true).apply {background=HomeCornerTagDrawable(tagFills[index]);gravity=Gravity.CENTER;setPadding(u(6),0,u(2),0)}
+        if(!largeText){tag.background=HomeBitmapDrawable(this@buildReferenceHome,"shortcut_tag_${listOf("declare","query","issue","fill","use")[index]}.png");tag.setTextColor(Color.TRANSPARENT)}
         frame.addView(tag,FrameLayout.LayoutParams(u(60),u(24),Gravity.BOTTOM or Gravity.END));clickable(frame,null){openService(item.action)}
         tiles.addView(frame,LinearLayout.LayoutParams(u(if(largeText)145 else 108),u(if(largeText)210 else 153)).apply {if(index<entries.lastIndex)marginEnd=u(8)})
     }
