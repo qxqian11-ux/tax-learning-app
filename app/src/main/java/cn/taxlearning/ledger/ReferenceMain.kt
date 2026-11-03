@@ -21,6 +21,8 @@ class MainActivity : Screen() {
     private var bottomInset=0
     private val positions = IntArray(5)
     private var revealIdentity = false
+    private var employmentCount: Int? = null
+    private var employmentBadge: TextView? = null
     internal var homeCardScroll=0
     internal var homeFeedTab=0
     private lateinit var sticky: FrameLayout
@@ -64,6 +66,10 @@ class MainActivity : Screen() {
             body.setPadding(0,0,0,u(106)+bottomInset);insets
         }
         ViewCompat.requestApplyInsets(root);render()
+        work { employmentRepo.observeCount().collect { count ->
+            employmentCount=count
+            employmentBadge?.text=if(settings.getBoolean("session_active",true)) "${count}家" else "—"
+        } }
     }
     override fun onSaveInstanceState(out: Bundle) { positions[tab]=scroll.scrollY;out.putInt("homeCardScroll",homeCardScroll);out.putInt("homeFeedTab",homeFeedTab);out.putInt("tab",tab);out.putIntArray("positions",positions);super.onSaveInstanceState(out) }
     internal fun select(index: Int) { if(index==tab)return;positions[tab]=scroll.scrollY;tab=index;render() }
@@ -79,6 +85,7 @@ class MainActivity : Screen() {
         }
     }
     private fun render() {
+        employmentBadge=null
         body.removeAllViews();body.setPadding(0,0,0,u(106)+bottomInset);renderNavigation()
         sticky.removeAllViews();scroll.setPadding(0,0,0,0);body.background=rounded(BG,0)
         if(tab==0){sticky.addView(buildSearchBar());scroll.setPadding(0,u(46),0,0);body.background=PageTopBackground(u(148))}
@@ -112,11 +119,11 @@ class MainActivity : Screen() {
         header.addView(identity,FrameLayout.LayoutParams(-1,u(102),Gravity.TOP).apply { topMargin=u(188);leftMargin=u(23);rightMargin=u(23) })
         body.addView(header,LinearLayout.LayoutParams(-1,u(284)))
         val shortcuts=row().apply { background=rounded(BG,25);setPadding(u(12),u(12),u(12),0) }
-        listOf(Triple("家庭成员","4人","family"),Triple("任职受雇","3家","job"),Triple("银行卡","1张","bank")).forEachIndexed { i, item ->
+        listOf(Triple("家庭成员","4人","family"),Triple("任职受雇",employmentCount?.let { "${it}家" }?:"…","job"),Triple("银行卡","1张","bank")).forEachIndexed { i, item ->
             val tile=column().apply { gravity=Gravity.CENTER;background=rounded(Color.WHITE,12);id=listOf(R.id.profile_family,R.id.profile_employment,R.id.profile_bank)[i] }
             tile.addView(ReferenceIcon(this,item.third,listOf(0xFFFF8965.toInt(),0xFFFFC052.toInt(),0xFF08D6BB.toInt())[i]),LinearLayout.LayoutParams(u(50),u(50)))
             tile.addView(type(item.first,15f,INK,true),LinearLayout.LayoutParams(-2,-2).apply { topMargin=u(1) })
-            tile.addView(type(if(active)item.second else "—",12f,Color.WHITE).apply { background=rounded(0xFF458DF8.toInt(),12);setPadding(u(9),u(2),u(9),u(2));gravity=Gravity.CENTER },LinearLayout.LayoutParams(-2,-2).apply { topMargin=u(12) })
+            tile.addView(type(if(active)item.second else "—",12f,Color.WHITE).apply { if(i==1) { employmentBadge=this;id=R.id.profile_employment_count }; background=rounded(0xFF458DF8.toInt(),12);setPadding(u(9),u(2),u(9),u(2));gravity=Gravity.CENTER },LinearLayout.LayoutParams(-2,-2).apply { topMargin=u(12) })
             clickable(tile,null) { if(active)info(listOf("家庭成员信息","任职受雇信息","银行卡信息")[i]) else showDemoLogin() }
             shortcuts.addView(tile,LinearLayout.LayoutParams(0,u(if(largeText)140 else 118),1f).apply { if(i<2)marginEnd=u(12) })
         }

@@ -1,0 +1,13 @@
+税知账 1.2.0 手机安装说明
+直接安装：D:\downLoad\tax-learning-1.2.0-release.apk
+项目原件：D:\PersonalTaxLearningApp\output\v1.2.0\tax-learning-1.2.0-release.apk
+大小：6655706 字节（6.35 MiB）
+SHA-256：5e6b69d91bd024b1f62a3d3b5e4e6e4137822db020a3cad1424fb6cb9214ed5d
+应用包名 cn.taxlearning.ledger，版本 1.2.0 / code 4。
+与 1.1.1 正式签名相同，请直接覆盖安装，不要先卸载或清除数据。旧版 APK、二维码及发布页保留。
+USB 或文件传输复制 APK 到手机后，在文件管理中点开安装即可，无需扫码。
+下载地址：https://github.com/qxqian11-ux/tax-learning-app/releases/download/v1.2.0/tax-learning-1.2.0-release.apk
+二维码：D:\PersonalTaxLearningApp\output\v1.2.0\APK下载二维码-1.2.0.png，实际编码内容同上述下载地址。
+安装后在“我的”点任职受雇，新增记录；点击编辑、长按删除；返回我的核对家数，再完全关闭 App 重开确认保留。
+华为真机需要复核软键盘、日期选择、长按手势、覆盖升级保留和系统强行停止后的记录。
+现有 JSON 备份仅备份收入明细，任职受雇记录暂不包含在内。

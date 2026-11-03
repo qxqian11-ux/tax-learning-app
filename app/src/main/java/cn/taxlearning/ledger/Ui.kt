@@ -97,7 +97,10 @@ abstract class Screen : AppCompatActivity() {
     fun go(cls: Class<*>, year: Int? = null, id: String? = null, title: String? = null) {
         startActivity(Intent(this,cls).apply { if(year!=null)putExtra("year",year); if(id!=null)putExtra("id",id); if(title!=null)putExtra("title",title) })
     }
-    fun info(title: String) = go(InfoActivity::class.java,title=title)
+    fun info(title: String) {
+        if(title=="任职受雇信息" || title=="任职受雇")go(EmploymentListActivity::class.java)
+        else go(InfoActivity::class.java,title=title)
+    }
     fun error(e: Throwable) {
         MaterialAlertDialogBuilder(this).setTitle("操作未完成").setMessage(e.message ?: "暂时无法操作，请重试")
             .setPositiveButton("知道了",null).show()
