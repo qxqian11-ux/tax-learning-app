@@ -1,0 +1,226 @@
+{
+  "method": "User explicitly chose screenshot cropping on 2026-11-03. No personal-information regions included. Background estimated from crop edges and removed, keeping anti-aliasing.",
+  "icons": [
+    {
+      "file": "nav_home.png",
+      "screenshot": "codex-clipboard-0469ceef-2d0f-42d4-94be-b4c01e60b52a.jpg",
+      "sourceSha256": "ebae8efce582f09d4dc7ef0fb8e800444dea9087b232d11ad789b0aee3c09ea9",
+      "crop": [
+        180,
+        2466,
+        256,
+        2542
+      ],
+      "backgroundRemoval": "dark"
+    },
+    {
+      "file": "nav_todo.png",
+      "screenshot": "codex-clipboard-0469ceef-2d0f-42d4-94be-b4c01e60b52a.jpg",
+      "sourceSha256": "ebae8efce582f09d4dc7ef0fb8e800444dea9087b232d11ad789b0aee3c09ea9",
+      "crop": [
+        376,
+        2466,
+        452,
+        2542
+      ],
+      "backgroundRemoval": "dark"
+    },
+    {
+      "file": "nav_services.png",
+      "screenshot": "codex-clipboard-0469ceef-2d0f-42d4-94be-b4c01e60b52a.jpg",
+      "sourceSha256": "ebae8efce582f09d4dc7ef0fb8e800444dea9087b232d11ad789b0aee3c09ea9",
+      "crop": [
+        570,
+        2466,
+        646,
+        2542
+      ],
+      "backgroundRemoval": "dark"
+    },
+    {
+      "file": "nav_message.png",
+      "screenshot": "codex-clipboard-0469ceef-2d0f-42d4-94be-b4c01e60b52a.jpg",
+      "sourceSha256": "ebae8efce582f09d4dc7ef0fb8e800444dea9087b232d11ad789b0aee3c09ea9",
+      "crop": [
+        766,
+        2466,
+        842,
+        2542
+      ],
+      "backgroundRemoval": "dark"
+    },
+    {
+      "file": "nav_mine.png",
+      "screenshot": "codex-clipboard-1640db5f-2f9a-4058-9a8d-d25dbb7e390a.jpg",
+      "sourceSha256": "58a9076462c8f975cc0402246a81dbe91ff9ec3f4f371ba0af5beddfe225303b",
+      "crop": [
+        962,
+        2466,
+        1038,
+        2542
+      ],
+      "backgroundRemoval": "dark"
+    },
+    {
+      "file": "nav_home_active.png",
+      "screenshot": "codex-clipboard-96596a23-4588-4d20-a055-da2003023d3b.jpg",
+      "sourceSha256": "f7f6e4c3d39b9fcbbcc21a90425b55cb6653eeb0d4e9aecf7c53852f7796a1f4",
+      "crop": [
+        180,
+        2466,
+        256,
+        2542
+      ],
+      "backgroundRemoval": "color"
+    },
+    {
+      "file": "nav_services_active.png",
+      "screenshot": "codex-clipboard-1640db5f-2f9a-4058-9a8d-d25dbb7e390a.jpg",
+      "sourceSha256": "58a9076462c8f975cc0402246a81dbe91ff9ec3f4f371ba0af5beddfe225303b",
+      "crop": [
+        570,
+        2466,
+        646,
+        2542
+      ],
+      "backgroundRemoval": "color"
+    },
+    {
+      "file": "nav_mine_active.png",
+      "screenshot": "codex-clipboard-0469ceef-2d0f-42d4-94be-b4c01e60b52a.jpg",
+      "sourceSha256": "ebae8efce582f09d4dc7ef0fb8e800444dea9087b232d11ad789b0aee3c09ea9",
+      "crop": [
+        962,
+        2466,
+        1038,
+        2542
+      ],
+      "backgroundRemoval": "color"
+    },
+    {
+      "file": "care.png",
+      "screenshot": "codex-clipboard-0469ceef-2d0f-42d4-94be-b4c01e60b52a.jpg",
+      "sourceSha256": "ebae8efce582f09d4dc7ef0fb8e800444dea9087b232d11ad789b0aee3c09ea9",
+      "crop": [
+        96,
+        1430,
+        166,
+        1500
+      ],
+      "backgroundRemoval": "dark"
+    },
+    {
+      "file": "security.png",
+      "screenshot": "codex-clipboard-0469ceef-2d0f-42d4-94be-b4c01e60b52a.jpg",
+      "sourceSha256": "ebae8efce582f09d4dc7ef0fb8e800444dea9087b232d11ad789b0aee3c09ea9",
+      "crop": [
+        96,
+        1570,
+        166,
+        1640
+      ],
+      "backgroundRemoval": "dark"
+    },
+    {
+      "file": "help.png",
+      "screenshot": "codex-clipboard-0469ceef-2d0f-42d4-94be-b4c01e60b52a.jpg",
+      "sourceSha256": "ebae8efce582f09d4dc7ef0fb8e800444dea9087b232d11ad789b0aee3c09ea9",
+      "crop": [
+        96,
+        1710,
+        166,
+        1780
+      ],
+      "backgroundRemoval": "dark"
+    },
+    {
+      "file": "consult.png",
+      "screenshot": "codex-clipboard-0469ceef-2d0f-42d4-94be-b4c01e60b52a.jpg",
+      "sourceSha256": "ebae8efce582f09d4dc7ef0fb8e800444dea9087b232d11ad789b0aee3c09ea9",
+      "crop": [
+        96,
+        1850,
+        166,
+        1920
+      ],
+      "backgroundRemoval": "dark"
+    },
+    {
+      "file": "about.png",
+      "screenshot": "codex-clipboard-0469ceef-2d0f-42d4-94be-b4c01e60b52a.jpg",
+      "sourceSha256": "ebae8efce582f09d4dc7ef0fb8e800444dea9087b232d11ad789b0aee3c09ea9",
+      "crop": [
+        96,
+        1990,
+        166,
+        2060
+      ],
+      "backgroundRemoval": "dark"
+    },
+    {
+      "file": "bank.png",
+      "screenshot": "codex-clipboard-0469ceef-2d0f-42d4-94be-b4c01e60b52a.jpg",
+      "sourceSha256": "ebae8efce582f09d4dc7ef0fb8e800444dea9087b232d11ad789b0aee3c09ea9",
+      "crop": [
+        920,
+        996,
+        1072,
+        1148
+      ],
+      "backgroundRemoval": "color"
+    },
+    {
+      "file": "notice.png",
+      "screenshot": "codex-clipboard-96596a23-4588-4d20-a055-da2003023d3b.jpg",
+      "sourceSha256": "f7f6e4c3d39b9fcbbcc21a90425b55cb6653eeb0d4e9aecf7c53852f7796a1f4",
+      "crop": [
+        50,
+        310,
+        140,
+        405
+      ],
+      "backgroundRemoval": "color"
+    },
+    {
+      "file": "flame.png",
+      "screenshot": "codex-clipboard-96596a23-4588-4d20-a055-da2003023d3b.jpg",
+      "sourceSha256": "f7f6e4c3d39b9fcbbcc21a90425b55cb6653eeb0d4e9aecf7c53852f7796a1f4",
+      "crop": [
+        65,
+        1365,
+        140,
+        1445
+      ],
+      "backgroundRemoval": "color"
+    },
+    {
+      "file": "search.png",
+      "screenshot": "codex-clipboard-96596a23-4588-4d20-a055-da2003023d3b.jpg",
+      "sourceSha256": "f7f6e4c3d39b9fcbbcc21a90425b55cb6653eeb0d4e9aecf7c53852f7796a1f4",
+      "crop": [
+        65,
+        150,
+        140,
+        230
+      ],
+      "backgroundRemoval": "white"
+    },
+    {
+      "file": "scan.png",
+      "screenshot": "codex-clipboard-96596a23-4588-4d20-a055-da2003023d3b.jpg",
+      "sourceSha256": "f7f6e4c3d39b9fcbbcc21a90425b55cb6653eeb0d4e9aecf7c53852f7796a1f4",
+      "crop": [
+        1080,
+        145,
+        1165,
+        225
+      ],
+      "backgroundRemoval": "white"
+    }
+  ],
+  "missingReferenceStates": [
+    "todo active",
+    "message active",
+    "identity eye open"
+  ]
+}

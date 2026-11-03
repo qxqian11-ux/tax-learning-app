@@ -1,0 +1,75 @@
+{
+  "referencePackage": "cn.gov.tax.its",
+  "actualVersion": "2.3.4",
+  "apkSha256": "4104702dea7b11c83467111be85f2779bb548e48cfbf2079e7cc17efb017b818",
+  "downloadPage": "https://www.289.com/azrj/558793.html",
+  "downloadUrl": "https://z85.198274.com//5/cn.gov.tax.its.apk",
+  "note": "Publicly distributed packaged UI assets, not design source files. Download page version label differs from actual APK. Original asset bytes preserved. No official launcher, national emblem, backend code or personal data copied.",
+  "assets": [
+    {
+      "file": "service_icons.png",
+      "apkEntry": "assets/www/static/images/icon-all.747718b.png",
+      "sha256": "8574e3411573b08fd8cca64069371030c89efaaa8f832b61967350a9732dcc6e"
+    },
+    {
+      "file": "family.png",
+      "apkEntry": "assets/www/static/images/icon-jtcy.e627c6d.png",
+      "sha256": "c9c15b880e207d7b6e3d68c7b52fb9e79ca3e43ef88850e1df624cc06e6614c1"
+    },
+    {
+      "file": "employment.png",
+      "apkEntry": "assets/www/static/images/icon-rzsg.4caf706.png",
+      "sha256": "46dd86cd8659b7e3f766eef9d8e2c650c7073d7891a2d6752202a202f2ff55db"
+    },
+    {
+      "file": "avatar_man.png",
+      "apkEntry": "assets/www/static/images/man-head.8eca80e.png",
+      "sha256": "c9f3e406ad7e81789c54619bb4b5b12485d7c01f1a70d962e46de03f026f1d14"
+    },
+    {
+      "file": "profile_background.png",
+      "apkEntry": "assets/www/static/images/profile-bg.bb57aba.png",
+      "sha256": "1b5c8a0ea201dbaa0e436e091bb00b93cdcb2785b8ccfe925f80399399ae3295"
+    },
+    {
+      "file": "article_0.png",
+      "apkEntry": "assets/www/static/images/jsal1.84480ec.png",
+      "sha256": "d4780f8f5d2a5aed7b09bd7cf968824bfed9430f9a2bf7e1818c72cd5e761a09"
+    },
+    {
+      "file": "article_1.png",
+      "apkEntry": "assets/www/static/images/jsal2.e980be0.png",
+      "sha256": "a8e7ac9ab3ff99be23db77ebd1e5736fed61345e1b308e017c8036efb1cfc2c5"
+    },
+    {
+      "file": "article_2.png",
+      "apkEntry": "assets/www/static/images/jsal3.fccb940.png",
+      "sha256": "1a23f19782a3307875774c3693d7796e2740689b3090bf6d8c18db260b97e53c"
+    },
+    {
+      "file": "article_3.png",
+      "apkEntry": "assets/www/static/images/jsal4.ca00c9c.png",
+      "sha256": "45f3384ba7637e49aa14f5f2c6f235ea1deebc14e1e12d6d295bf7d719225dab"
+    },
+    {
+      "file": "annual_feature.png",
+      "apkEntry": "assets/www/static/images/hssb.811b584.png",
+      "sha256": "3d53290d8c0b06fb9d641f3830a7c816d14fb4d94b2d832cf827a2c4bedca6e7"
+    },
+    {
+      "file": "deduction_feature.png",
+      "apkEntry": "assets/www/static/images/zftp.c6f1ad8.png",
+      "sha256": "141e306634c709b0f063344829b6bc7f10ca3953250e1bfba115db60de983ebb"
+    },
+    {
+      "file": "warning_banner.png",
+      "apkEntry": "assets/www/static/images/bszn-znz.21f361f.png",
+      "sha256": "0a690d29edf2154ce75e5ebaa58abf2943efa4577a3b77f160ff298254d4204f"
+    },
+    {
+      "file": "home_footer.png",
+      "apkEntry": "assets/www/static/images/home-foot-bg.786b77c.png",
+      "sha256": "c7271ca53912900ba90a25514cc625d4755fa56204ed7c8494451ec51b1f4fa5"
+    }
+  ]
+}

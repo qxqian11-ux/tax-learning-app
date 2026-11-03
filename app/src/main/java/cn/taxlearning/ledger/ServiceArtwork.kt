@@ -9,6 +9,37 @@ import android.view.View
 internal class ServiceArtwork(context: Context, private val kind: String) : View(context) {
     private val p=Paint(Paint.ANTI_ALIAS_FLAG)
     override fun onDraw(c: Canvas) {
+        if(kind.startsWith("article")) {
+            val index=kind.removePrefix("article").toIntOrNull()?.coerceIn(0,3) ?: 0
+            p.color=intArrayOf(0xFFFFEBEE.toInt(),0xFFFFF2D8.toInt(),0xFFC9F2FC.toInt(),0xFFE9ECFF.toInt())[index]
+            val w=width.toFloat();val h=height.toFloat()
+            val shape=Path().apply {moveTo(w*.18f,0f);lineTo(w,0f);lineTo(w,h);lineTo(0f,h);close()}
+            c.save();c.clipPath(shape);c.drawColor(p.color)
+            ReferenceAssets.draw(context,c,"article_$index.png",RectF(0f,0f,w,h));c.restore();return
+        }
+        if(kind=="warning") {
+            // The original banner includes its text. This view displays only its illustration.
+            ReferenceAssets.draw(context,c,"warning_banner.png",RectF(0f,0f,width.toFloat(),height.toFloat()),Rect(0,0,320,210));return
+        }
+        if(kind=="hero") {
+            val w=width.toFloat();val h=height.toFloat()
+            p.color=0x1672B9F5
+            c.save();c.translate(w*.06f,h*.43f);c.rotate(-10f)
+            c.drawRoundRect(0f,0f,w*.32f,h*.72f,w*.04f,w*.04f,p)
+            p.color=0x1572B9F5
+            for(x in 0..2)for(y in 0..3)c.drawRoundRect(w*(.04f+x*.085f),h*(.06f+y*.13f),w*(.10f+x*.085f),h*(.15f+y*.13f),w*.012f,w*.012f,p)
+            c.restore()
+            val target=RectF(w*(1f-476f/1136f),h*(1f-300f/632f),w,h)
+            val layer=c.saveLayer(target,null)
+            ReferenceAssets.draw(context,c,"hero_decoration.png",target)
+            // Fade only the crop edge into the native background to avoid a rectangular seam.
+            p.color=Color.WHITE; p.shader=LinearGradient(target.left,0f,target.left+w*.025f,0f,intArrayOf(Color.TRANSPARENT,Color.WHITE),null,Shader.TileMode.CLAMP)
+            p.xfermode=PorterDuffXfermode(PorterDuff.Mode.DST_IN);c.drawRect(target,p)
+            p.shader=null;p.xfermode=null;c.restoreToCount(layer);return
+        }
+        if(kind=="promo") {
+            ReferenceAssets.draw(context,c,"promo_banner.png",RectF(0f,0f,width.toFloat(),height.toFloat()));return
+        }
         c.save();c.scale(width/200f,height/120f)
         fun fill(color: Int) { p.shader=null;p.color=color;p.style=Paint.Style.FILL }
         fun gradient(a: Int,b: Int,x: Float=0f,y: Float=0f) { p.color=Color.WHITE;p.shader=LinearGradient(x,y,x+90,y+100,intArrayOf(a,b),null,Shader.TileMode.CLAMP) }

@@ -20,7 +20,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 const val ACCENT = 0xFF4088F5.toInt()
-const val INK = 0xFF252936.toInt()
+const val INK = 0xFF303133.toInt()
 const val MUTED = 0xFF747884.toInt()
 const val BG = 0xFFF5F6FA.toInt()
 const val PALE = 0xFFEDF5FF.toInt()
@@ -81,10 +81,15 @@ abstract class Screen : AppCompatActivity() {
     fun setup(title: String, back: Boolean = true, edgeToEdge: Boolean = false) {
         root=column().apply { setBackgroundColor(BG) };setContentView(root)
         titleBar=android.widget.FrameLayout(this).apply { setBackgroundColor(Color.WHITE) }
-        titleBar.addView(text(title,17f,0xFF33363B.toInt()).apply { gravity=Gravity.CENTER;setPadding(dp(70),0,dp(70),0);isSingleLine=true },android.widget.FrameLayout.LayoutParams(-1,-1))
-        if(back)titleBar.addView(text("〈返回",16f,ACCENT).apply { gravity=Gravity.CENTER;setPadding(dp(7),0,dp(5),0);contentDescription="返回";setOnClickListener { onBackPressedDispatcher.onBackPressed() } },android.widget.FrameLayout.LayoutParams(-2,-1,Gravity.START))
-        root.addView(titleBar,LinearLayout.LayoutParams(-1,dp(48)))
-        root.addView(View(this).apply { setBackgroundColor(0xFFE6E8EB.toInt()) },LinearLayout.LayoutParams(-1,dp(1)))
+        titleBar.addView(referenceText(title,18f,0xFF303133.toInt()).apply { gravity=Gravity.CENTER;setPadding(ru(67),0,ru(67),0);isSingleLine=true },android.widget.FrameLayout.LayoutParams(-1,-1))
+        if(back){
+            val backButton=row().apply { gravity=Gravity.CENTER_VERTICAL;setPadding(ru(16),0,ru(8),0);contentDescription="返回";setOnClickListener { onBackPressedDispatcher.onBackPressed() } }
+            backButton.addView(ChevronView(this,ACCENT,true),LinearLayout.LayoutParams(ru(10),ru(22)))
+            backButton.addView(referenceText("返回",17f,ACCENT),LinearLayout.LayoutParams(-2,-2).apply { marginStart=ru(4) })
+            titleBar.addView(backButton,android.widget.FrameLayout.LayoutParams(-2,-1,Gravity.START))
+        }
+        root.addView(titleBar,LinearLayout.LayoutParams(-1,ru(48)))
+        root.addView(View(this).apply { setBackgroundColor(0xFFE6E8EB.toInt()) },LinearLayout.LayoutParams(-1,1))
         val scroll=ScrollView(this).apply { id=R.id.page_scroll;isFillViewport=true;clipToPadding=false }
         body=column().apply { if(!edgeToEdge)setPadding(dp(16),dp(20),dp(16),dp(24)) }
         scroll.addView(body,ViewGroup.LayoutParams(-1,-2));root.addView(scroll,LinearLayout.LayoutParams(-1,0,1f))

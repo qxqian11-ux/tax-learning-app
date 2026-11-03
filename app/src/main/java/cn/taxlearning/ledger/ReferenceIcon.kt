@@ -4,10 +4,11 @@ import android.content.Context
 import android.graphics.*
 import android.view.View
 
-/** Consistent scalable icons with independent artwork. */
+/** Reference sprite artwork when available; native paths for remaining controls. */
 internal class ReferenceIcon(context: Context, private val kind: String, private val tint: Int, private val active: Boolean=false) : View(context) {
     private val p=Paint(Paint.ANTI_ALIAS_FLAG)
     override fun onDraw(c: Canvas) {
+        if(ReferenceAssets.icon(context,c,kind,width,height,tint,active)) return
         c.save();c.scale(width/32f,height/32f);p.color=tint;p.style=Paint.Style.STROKE;p.strokeWidth=2.2f;p.strokeCap=Paint.Cap.ROUND;p.strokeJoin=Paint.Join.ROUND
         fun path(vararg points: Float) { val path=Path().apply { moveTo(points[0],points[1]);var i=2;while(i<points.size){lineTo(points[i],points[i+1]);i+=2} };c.drawPath(path,p) }
         when(kind) {
@@ -30,6 +31,7 @@ internal class ReferenceIcon(context: Context, private val kind: String, private
             "about" -> {c.drawCircle(16f,16f,13f,p);path(16f,14f,16f,24f);p.style=Paint.Style.FILL;c.drawCircle(16f,8f,1.5f,p)}
             "search" -> {c.drawCircle(13f,13f,10f,p);path(21f,21f,29f,29f)}
             "scan" -> {path(4f,10f,4f,4f,10f,4f);path(22f,4f,28f,4f,28f,10f);path(28f,22f,28f,28f,22f,28f);path(10f,28f,4f,28f,4f,22f);path(10f,16f,22f,16f)}
+            "flame" -> {p.style=Paint.Style.FILL;c.drawCircle(16f,16f,14f,p);p.color=Color.WHITE;c.drawPath(Path().apply {moveTo(16f,27f);cubicTo(3f,23f,11f,13f,13f,10f);lineTo(14f,17f);cubicTo(20f,13f,17f,5f,19f,5f);cubicTo(32f,18f,25f,26f,16f,27f);close()},p)}
             "notice" -> {p.style=Paint.Style.FILL;c.drawRoundRect(9f,4f,23f,23f,7f,7f,p);c.drawRoundRect(5f,21f,27f,25f,2f,2f,p);c.drawCircle(16f,28f,2f,p)}
             "eye" -> {c.drawArc(4f,5f,28f,21f,15f,150f,false,p);if(active)c.drawCircle(16f,13f,3f,p)else{path(8f,19f,6f,23f);path(16f,21f,16f,25f);path(24f,19f,26f,23f)}}
             else -> {
@@ -37,8 +39,8 @@ internal class ReferenceIcon(context: Context, private val kind: String, private
                 p.shader=LinearGradient(4f,4f,28f,29f,intArrayOf(tint,blend(tint,.92f)),null,Shader.TileMode.CLAMP);c.drawRoundRect(3f,4f,29f,30f,6f,6f,p);p.shader=null
                 p.style=Paint.Style.STROKE;p.color=Color.WHITE;p.strokeWidth=2f
                 when(kind){
-                    "income" -> {c.drawRoundRect(8f,10f,25f,24f,3f,3f,p);path(11f,8f,22f,8f);path(16f,13f,19f,16f,22f,13f);path(16f,17f,22f,17f);path(19f,16f,19f,22f)}
-                    "annual" -> {c.drawRoundRect(8f,9f,24f,25f,2f,2f,p);path(11f,14f,21f,14f);path(12f,18f,12f,22f);path(10f,20f,14f,20f);path(19f,19f,22f,19f);path(19f,23f,22f,23f)}
+                    "income" -> {p.style=Paint.Style.FILL;c.drawRoundRect(8f,9f,25f,25f,3f,3f,p);p.color=tint;c.drawRoundRect(12f,12f,20f,13.4f,.7f,.7f,p);p.style=Paint.Style.STROKE;p.strokeWidth=1.2f;path(18f,16f,20f,18f,22f,16f);path(18f,19f,22f,19f);path(20f,18f,20f,23f)}
+                    "annual" -> {p.style=Paint.Style.FILL;c.drawRoundRect(8f,10f,25f,16f,1f,1f,p);p.alpha=170;c.drawRoundRect(8f,21f,15f,24f,1f,1f,p);c.drawRoundRect(10f,19f,13f,26f,1f,1f,p);p.alpha=255;c.drawRoundRect(19f,20f,25f,22f,1f,1f,p);c.drawRoundRect(19f,24f,25f,26f,1f,1f,p)}
                     "record" -> {path(8f,11f,23f,11f);path(8f,16f,15f,16f);path(18f,21f,24f,21f,19f,26f,24f,26f)}
                     "deduction" -> {path(8f,11f,22f,11f);path(8f,17f,14f,17f);path(18f,25f,20f,18f,24f,20f,22f,26f,18f,25f)}
                     "invoice" -> {c.drawRect(8f,9f,12f,13f,p);c.drawRect(20f,9f,24f,13f,p);c.drawRect(8f,21f,12f,25f,p);path(19f,21f,24f,21f,24f,26f);path(17f,10f,17f,18f,10f,18f)}

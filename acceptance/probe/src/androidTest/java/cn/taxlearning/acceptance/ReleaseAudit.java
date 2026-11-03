@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class ReleaseAudit {
- final String pkg="cn.taxlearning.ledger";
+ final String pkg=InstrumentationRegistry.getArguments().getString("targetPackage","cn.taxlearning.ledger");
  UiDevice d;
  File folder;
  @Before public void setup() throws Exception {

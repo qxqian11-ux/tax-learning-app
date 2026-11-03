@@ -20,9 +20,18 @@ public class UiReleaseRegression extends ReleaseAudit {
  String file(String label){return prefix+"-"+label;}
  void id(String name){UiObject2 o=d.wait(Until.findObject(By.res(pkg+":id/"+name)),8000);assertNotNull("Missing id "+name,o);o.click();d.waitForIdle();SystemClock.sleep(400);}
  void listReady(){assertTrue(d.wait(Until.hasObject(By.res(pkg+":id/income_add")),8000));d.waitForIdle();SystemClock.sleep(300);}
- @Override UiObject2 find(String text)throws Exception{UiObject2 found=d.findObject(By.text(text));if(found!=null)return found;UiScrollable list=new UiScrollable(new UiSelector().scrollable(true));if(list.exists()){list.setSwipeDeadZonePercentage(.22);list.scrollIntoView(new UiSelector().text(text));}return waitText(text);}
+ @Override UiObject2 find(String text)throws Exception{
+  UiObject2 found=d.findObject(By.text(text));if(found!=null)return found;
+  found=d.findObject(By.descContains(text));if(found!=null)return found;
+  UiScrollable list=new UiScrollable(new UiSelector().scrollable(true));
+  if(list.exists()){
+   list.setSwipeDeadZonePercentage(.22);
+   if(!list.scrollIntoView(new UiSelector().text(text)))list.scrollIntoView(new UiSelector().descriptionContains(text));
+  }
+  found=d.findObject(By.descContains(text));return found!=null?found:waitText(text);
+ }
  @Override void click(String s)throws Exception{for(int i=0;i<6;i++){try{UiObject2 o=find(s);UiObject2 nav=d.findObject(By.res(pkg+":id/nav_0"));if(nav!=null&&o.getVisibleBounds().bottom>=nav.getParent().getVisibleBounds().top){d.swipe(d.getDisplayWidth()/2,d.getDisplayHeight()*7/10,d.getDisplayWidth()/2,d.getDisplayHeight()*4/10,30);d.waitForIdle();continue;}o.click();d.waitForIdle();SystemClock.sleep(350);return;}catch(StaleObjectException e){if(i==5)throw e;}}fail("Cannot click "+s);}
- @Override void home()throws Exception{d.executeShellCommand("am force-stop "+pkg);note("force-stop PID after = "+d.executeShellCommand("pidof "+pkg).trim());d.executeShellCommand("am start -W -n "+pkg+"/.MainActivity");waitText("首页");}
+ @Override void home()throws Exception{d.executeShellCommand("am force-stop "+pkg);note("force-stop PID after = "+d.executeShellCommand("pidof "+pkg).trim());d.executeShellCommand("am start -W -n "+pkg+"/cn.taxlearning.ledger.MainActivity");waitText("首页");}
  @Override void query(int year)throws Exception{home();id("nav_2");click("收入纳税明细");id("query_year");UiScrollable years=new UiScrollable(new UiSelector().className("android.widget.ListView"));years.scrollIntoView(new UiSelector().text(year+" 年"));click(year+" 年");id("query_submit");listReady();}
  @Override void backupPage()throws Exception{home();id("nav_2");click("数据备份与恢复");waitText("数据备份与恢复");}
  @Override void openBackupFile(String name)throws Exception{

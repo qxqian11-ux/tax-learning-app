@@ -1,0 +1,27 @@
+{
+  "method": "Reference screenshot decoration crops; no financial figures or identity regions included. Text and buttons over the hero remain native dynamic UI.",
+  "assets": [
+    {
+      "file": "hero_decoration.png",
+      "screenshot": "codex-clipboard-96596a23-4588-4d20-a055-da2003023d3b.jpg",
+      "crop": [
+        700,
+        796,
+        1176,
+        1096
+      ],
+      "sourceSha256": "f7f6e4c3d39b9fcbbcc21a90425b55cb6653eeb0d4e9aecf7c53852f7796a1f4"
+    },
+    {
+      "file": "promo_banner.png",
+      "screenshot": "codex-clipboard-c1e2382c-821c-4f9e-bf00-8c0f7c336d65.jpg",
+      "crop": [
+        40,
+        798,
+        1176,
+        1090
+      ],
+      "sourceSha256": "3edeb20288d23e34a853725eef49e6dff8d606ae2d3362c45f4c9d2bf5dfa9cb"
+    }
+  ]
+}
