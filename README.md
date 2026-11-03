@@ -1,8 +1,8 @@
 # 税知账 · 个人所得税学习版
 
-当前版本 **1.1.0 / versionCode 2**。独立的 Kotlin / Android 原生课程项目，参考用户提供的页面截图实现蓝白界面，所有身份、收入与税额均用于模拟学习，不连接真实税务系统。
+当前版本 **1.1.1 / versionCode 3**。独立的 Kotlin / Android 原生课程项目，参考用户提供的页面截图实现蓝白界面，所有身份、收入与税额均用于模拟学习，不连接真实税务系统。
 
-下载与历史版本见 [GitHub Releases](https://github.com/qxqian11-ux/tax-learning-app/releases)。新版交付集中在 `output/v1.1.0/`，原 `output/税知账-1.0.0-release.apk` 和旧二维码保留。安装时可用同包名、同签名 APK 覆盖升级，升级前建议先导出 JSON 备份。
+下载与历史版本见 [GitHub Releases](https://github.com/qxqian11-ux/tax-learning-app/releases)。新版交付集中在 `output/v1.1.1/`，原 `output/税知账-1.0.0-release.apk` 和旧二维码保留。安装时可用同包名、同签名 APK 覆盖升级，升级前建议先导出 JSON 备份。
 
 ## 页面与功能
 
@@ -14,7 +14,7 @@
 - 金额以 Long 整数分存储，使用 BigDecimal 校验和转换；原数据库 schema 版本 1 保持不变。
 - 系统文件选择器导出 CSV / JSON；JSON 校验、重复跳过、内容冲突事务回滚与异常恢复保护。
 - 首次示例与初始化标记在同一事务中写入；后续启动不重新生成已删记录。
-- 自定义图标、头像及矢量插画，无 Google Play 依赖，无联网、通讯录、定位或广泛存储权限。
+- 独立的桌面图标；应用内采用打包参考图片和用户授权的截图裁片，来源清单在 `app/src/main/assets/reference-ui/`；无 Google Play 依赖，无联网、通讯录、定位或广泛存储权限。
 
 非核心税务入口为明确标注的学习展示，不提供真实申报、银行或实名认证。详情中原模型没有维护的扣除与机构信息显示为“—”或“未维护”。新增和修改页尚无参考截图，采用统一的蓝白分组表单，待视觉核对。
 
@@ -29,7 +29,7 @@ Android Studio 打开项目，JDK 21（字节码目标 Java 17）、SDK 34、AGP
 - `Ui.kt`：通用 Screen、布局和交互辅助。
 - `ReferenceMain.kt`：五项导航、个人中心、待办和消息。
 - `ReferencePages.kt`：首页、服务目录、搜索和资讯。
-- `ReferenceIcon.kt`、`ServiceArtwork.kt`：自定义本地矢量素材。
+- `ReferenceIcon.kt`、`ReferenceAssets.kt`、`ServiceArtwork.kt`：本地参考图标、裁片与绘制；`ReferenceSpacing.kt`：参考图尺寸换算。
 - `IncomeScreens.kt`：收入查询、年度选择、列表与详情。
 - `EditActivity.kt`：录入/修改表单、日期、字段校验与保存。
 - `Model.kt`、`Repository.kt`、`BackupCodec.kt`：实体/DAO、精确金额、数据持久化和备份事务。
@@ -41,10 +41,14 @@ Android Studio 打开项目，JDK 21（字节码目标 Java 17）、SDK 34、AGP
 
 重构前备份位于 `backup/before-ui-1.0.0-*`，Git 基线为 `1ce9b28d87a0dc053b1815af5a6dfabe5dc10b98`。原数据库结构、Repository、备份算法和金额精度保留。
 
-本轮说明、原始文件校验和运行截图见 `docs/*-1.1.0.txt` 与 `output/v1.1.0/evidence`。HarmonyOS 4.2.0 真机待用户测试；模拟器通过不等同于该手机已通过。HarmonyOS NEXT 不在本 APK 的目标范围内。
+本轮说明、文件校验和运行截图见 `docs/*-1.1.1.txt` 与 `output/v1.1.1/evidence`。HarmonyOS 4.2.0 真机待用户测试；模拟器通过不等同于该手机已通过。HarmonyOS NEXT 不在本 APK 的目标范围内。
 
 ## 1.1.0 UI 参考图改版
 
 个人中心、首页、办&查、收入查询/列表/详情按用户参考图重构，头像、图标和插画独立绘制。新增/修改表单采用同一蓝白风格，其参考图尚未提供。非核心服务仍为模拟展示，不接入真实系统。
 
 本轮证据与交付位于 `output/v1.1.0`，说明见 `docs/UI重构说明-1.1.0.txt` 与 `docs/功能回归报告-1.1.0.txt`。旧 1.0.0 备份和 Git 基线保留。
+
+## 1.1.1 图标与间距校准
+
+按截图校准布局并替换图标、头像及装饰；底部导航、银行卡和黑色菜单图标按用户选择从截图裁取。待办/消息选中态仍缺参考，未声称所有像素 1:1。最终签名包实际通过跨年度增删改、强行关闭重启、统计和原数据逐字段保留核验；较早候选包完整 CSV/JSON/动态年度/小屏回归的 APK 哈希另列，见 `docs/功能回归报告-1.1.1.txt`。旧 1.1.0 原包和发布页保留。

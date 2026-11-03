@@ -1,0 +1,32 @@
+税知账 1.1.1 最终验收记录
+最终 APK：D:\PersonalTaxLearningApp\output\v1.1.1\tax-learning-1.1.1-release.apk
+大小：6641902 字节；SHA-256：42978352179e3497a0bd2916ee3f77a343a7284ed71d3a1e6884a05350dcb78e
+包名 cn.taxlearning.ledger；versionName 1.1.1；versionCode 3。
+应用名称 税知账·学习版；最低 Android 7.0 / API 24；target SDK 34。
+同一正式签名证书 SHA-256：3ed3b8afba8e782aa439bbe99b3ca3f5ae41e1d3c14da479c805455364613d18；APK v2 签名验证通过。
+权限仅应用内部 signature 级 DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION；没有联网、相机、通讯录、定位或广泛存储读取权限。
+
+最终包实际测试（哈希为上述最终值）
+Android 11 / API 30 模拟器，1216×2688，正式 Release 覆盖安装、启动及实际界面采集通过。
+点击查询进入收入列表；新增 2024 年 1000.10/10.20/9.30，修改为 1500.35/15.10/14.90；新增 2025 年 2000.20/20.40/19.50。
+完全停止进程（PID 验证为空）后重新启动，两年分别查询仍在；2025 记录取消删除、再确认删除，重启后保持删除，2024 不受影响。
+金额逐项与系统文件选择器实际导出的 JSON 核对。原 2024 合计 1820.60/47.15/44.91；修改后合计 3320.95/62.25/59.81；2025 删除后为 0。
+测试后清理本次数据，原有 6 条记录的 UUID、全部字段和金额与测试前逐项一致。
+4 项 JVM 单元测试通过；Lint 错误 0、警告 37。另见 evidence/android-tests.log 中应用自身 Android 测试结果。
+
+本轮较早候选包完整回归
+哈希 6736add1604ee706b0f224ab656a777390ba8117d4fbf209c6bc6918a7b2bf3d（间距版，尚未替换最终图标）。
+实际通过：年度 2019..2026、临时改为 2027 的动态上限、首页/我的/五项导航、搜索、年度隔离、增删改查、月份/所得筛选、统计、CSV 中文/BOM/金额、JSON 备份恢复、重复跳过、异常 JSON 拒绝、删除示例后重启不重新生成、模拟退出/登录不丢记录、360dp 小屏/1.3 大字体/关怀版。
+完整回归原始证据在 evidence/regression、raw-exports、regression-results.json；小屏和交互日志在 evidence/small-screen、spacing-actions。之后仅调整装饰和绘制，保护的数据层文件哈希相同。未把较早候选包的完整回归冒充为最终包完整重跑。
+
+中断记录：最终专项脚本第一次无法用 textContains 匹配多行统计弹窗；实际弹窗 2820.70/57.35/54.21 正确。修正为读取弹窗全文后断言，先清理该次一条测试记录并核对原 6 条数据，再运行最终专项通过。失败及清理日志保留。
+
+下载和二维码
+下载：https://github.com/qxqian11-ux/tax-learning-app/releases/download/v1.1.1/tax-learning-1.1.1-release.apk
+GitHub Release 页面和 APK 均 HTTP 200；实际下载的 6641902 字节文件 SHA-256 与本地完全一致。
+二维码：D:\PersonalTaxLearningApp\output\v1.1.1\APK下载二维码-1.1.1.png
+已从二维码像素解码，其实际编码内容为上述最终 APK 下载链接。详情见 download-verification.json。
+
+尚未测试或未能确认
+华为 HarmonyOS 4.2.0 真机、手机整机重启、其他 Android 版本、长期/极端数据量兼容性尚未测试。最终包完整 CSV/恢复流程未再次重跑；已在同数据层候选包实际通过。
+全部页面/图标的像素级 1:1 尚不能确认，缺少的参考态及系统差异见 UI校准说明。模拟器通过不等于华为真机通过。

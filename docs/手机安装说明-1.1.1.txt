@@ -1,0 +1,10 @@
+税知账 1.1.1 手机安装说明
+可直接安装文件：D:\downLoad\tax-learning-1.1.1-release.apk
+项目原件：D:\PersonalTaxLearningApp\output\v1.1.1\tax-learning-1.1.1-release.apk
+大小：6641902 字节（6.33 MiB）；SHA-256：42978352179e3497a0bd2916ee3f77a343a7284ed71d3a1e6884a05350dcb78e
+应用：税知账·学习版；cn.taxlearning.ledger；1.1.1 / code 3；最低 API 24，目标 SDK 34。
+下载地址：https://github.com/qxqian11-ux/tax-learning-app/releases/download/v1.1.1/tax-learning-1.1.1-release.apk
+二维码：D:\PersonalTaxLearningApp\output\v1.1.1\APK下载二维码-1.1.1.png；像素解码内容就是上述下载地址。
+手机已有 1.0.0 或 1.1.0 时，先导出 JSON 备份，然后直接覆盖安装 1.1.1；原正式签名相同。不要先卸载或清除数据。
+GitHub 下载慢时，直接用 USB 或文件传输将 APK 复制到手机，再在文件管理中点开安装。无需扫码。
+旧 1.1.0 文件、二维码和发布地址保留，1.1.1 是单独的新文件。
